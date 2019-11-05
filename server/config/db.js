@@ -27,9 +27,9 @@ class MongoDB{
         return new Promise((resolve, reject) => {
             let _that = this;
             if (_that.client === '') {
-                _that.client = mongoose.connect(Config.dbUrl + Config.dbName, { useNewUrlParser: true });
+                _that.client = mongoose.connect(Config.mongoDB.dbUrl + Config.mongoDB.dbName, { useNewUrlParser: true });
                 mongoose.connection.on('connected', () => {
-                    console.log(`Mongoose connected on ${Config.dbUrl + Config.dbName}`);
+                    console.log(`Mongoose connected on ${Config.mongoDB.dbUrl + Config.mongoDB.dbName}`);
                     resolve(_that.client);
                 });
                 mongoose.connection.on('disconnected', (err) => {

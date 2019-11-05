@@ -13,11 +13,11 @@ const logger = require('koa-logger')
 const debug = require('debug')('koa2:server')
 const path = require('path')
 
-const config = require('./config')
+const config = require('./config/config')
 const index = require('./routes/index')
 const user = require('./routes/users')
 
-const port = process.env.PORT || config.port
+const port = process.env.PORT || config.domain.port
 
 // error handler
 onerror(app);
