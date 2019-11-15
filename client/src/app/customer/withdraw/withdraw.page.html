@@ -1,0 +1,95 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <ion-icon slot="icon-only" name="arrow-back" color="dark"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title color="yihe">提现</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <div class="p_content">
+		<div class="amount_area mb05">
+			<ion-grid>
+			  <ion-row>
+			    <ion-col size="6" class="key">
+			      <ion-label>可提现金额</ion-label>
+			    </ion-col>
+			    <ion-col size="6">
+			      <span class="tag">￥</span><span class="amount">{{userinfo.balance.bonus | number:'1.0-0'}}</span>
+			    </ion-col>
+			  </ion-row>
+
+			  <ion-row>
+			    <ion-col size="6" class="key">
+			      <ion-label>请输入提现金额</ion-label>
+			    </ion-col>
+			    <ion-col size="6">
+			      <ion-input class="withdraw_input" required type="number" [(ngModel)]="withdrawMoney" placeholder="不低于30元"></ion-input>
+			    </ion-col>
+        </ion-row>
+        
+        <ion-row>
+			    <ion-col size="6" class="key">
+			      <ion-label>提现申请中</ion-label>
+			    </ion-col>
+			    <ion-col size="6">
+			      <span class="tag">￥</span><span class="amount">{{userinfo.balance.withdrawing | number:'1.0-0'}}</span>
+			    </ion-col>
+			  </ion-row>  
+
+			  <ion-row>
+			    <ion-col size="6" class="key">
+			      <ion-label>累计已提现奖金</ion-label>
+			    </ion-col>
+			    <ion-col size="6">
+			      <span class="tag">￥</span><span class="amount">{{userinfo.balance.withdrawals | number:'1.0-0'}}</span>
+			    </ion-col>
+			  </ion-row>
+			</ion-grid>
+        </div>
+
+        <div class="account_area mb05">
+        	<ion-list>
+	          <ion-item lines="none">
+	            <ion-label class="title">提现账户信息</ion-label>
+	          </ion-item>
+
+	          <ion-item lines="full">
+			    <ion-avatar slot="start">
+                    <img src="assets/img/alipay.png">
+                </ion-avatar>
+			    <ion-label class="account">支付宝账户：</ion-label>
+			    <ion-button slot="end" fill="clear" class="alipay_color" (click)="presentAlertAlipay()">
+	        		<ion-icon slot="end" name="arrow-dropright"></ion-icon>
+	        		修改
+      			</ion-button>
+			  </ion-item>
+
+			  <ion-item lines="none">
+			    <ion-avatar slot="start">
+                    <img src="assets/img/blank_100.png">
+                </ion-avatar>
+      			<ion-label class="account">户名：{{userinfo.account.account_name}}</ion-label>
+    		  </ion-item>
+
+    		  <ion-item lines="none">
+    		    <ion-avatar slot="start">
+                    <img src="assets/img/blank_100.png">
+                </ion-avatar>
+      			<ion-label class="account">账号：{{userinfo.account.account_number}}</ion-label>
+    		  </ion-item>
+	          
+	        </ion-list>
+        </div>
+        <div class="btn_bar">
+	        <ion-button (click)="withdraw()" color="yihe" expand="block" class="yihe_btn" [class.button-disabled]="!withdrawMoney || withdrawMoney > userinfo.balance.bonus || withdrawMoney < common.config.withdraw_threshold || !userinfo.account.account_name || !userinfo.account.account_number">
+	        申请提现
+	    	</ion-button>
+
+    	</div> 
+
+	</div>
+
+</ion-content>

@@ -1,0 +1,50 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <ion-icon slot="icon-only" name="arrow-back" color="dark"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title color="yihe">申请加入商家联盟</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <div>
+    <div class="titles">本页面为联盟活动报名入口</div>
+    <ion-list class="input_list">
+      <ion-item>
+      <ion-label>负责人姓名</ion-label>
+        <ion-input placeholder="请输入商户负责人的姓名" [(ngModel)]="merchant.name" class="item_right"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>手机号码</ion-label>
+        <ion-input type="number" placeholder="手机号码" [(ngModel)]="merchant.mobilephone" class="item_right"></ion-input>
+      </ion-item>
+      <ion-item (click)="showCatalog()">
+        <ion-label>选择行业类别</ion-label>
+        <span class="item_right" slot="end">
+          {{merchant.catalog}}
+        </span>
+        <ion-icon class="item_right" name="ios-arrow-forward" slot="end"></ion-icon>
+      </ion-item>
+      <ion-item>
+        <ion-label>公司/商户名称</ion-label>
+        <ion-input placeholder="请输入营业执照上的名称" [(ngModel)]="merchant.business_name" class="item_right"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>经营地址</ion-label>
+        <ion-input placeholder="请输入经营场所地址" [(ngModel)]="merchant.address" class="item_right"></ion-input>
+      </ion-item>
+    </ion-list>
+<!--[class.button-disabled]="!userinfo.uid"-->
+    <ion-button color="yihe" (click)="apply()" expand="block" class="yihe_btn" >
+      提交
+    </ion-button>
+
+    <p class="tip">
+        <ion-text color="yihe">1、商户报名加入商家联盟的城市，目前仅限于济南市、青岛市、包头市。</ion-text><br />
+        <ion-text color="yihe">2、其他城市有意向合作制作商家活动的，请联系0531-89826789。</ion-text>
+    </p>
+  </div>
+
+</ion-content>

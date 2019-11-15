@@ -1,0 +1,29 @@
+.titles{
+    background: #faf7ff;
+	padding: 0 10%;
+	line-height: 3rem;
+	font-size: 1.4rem;
+	color: #737373;
+	font-weight: normal;
+	border-bottom: 1px solid #f0f0f0;
+}
+
+.input_list{
+    margin: 0rem auto;
+    width: 90%;   
+
+    ion-label{
+		font-size: 1.4rem;
+	}
+}
+
+.item_right{
+	font-size: 1.4rem;
+	text-align:right;
+}
+
+.tip{
+	width: 80%; 
+	margin: 2rem auto;
+	font-size: 1.4rem;
+}

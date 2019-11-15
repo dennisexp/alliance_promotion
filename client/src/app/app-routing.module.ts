@@ -6,6 +6,11 @@ const routes: Routes = [
   { path: 'home', loadChildren: () => import('./home/home.module').then( m => m.HomePageModule)},
   { path: 'coupon-list', loadChildren: './customer/coupon-list/coupon-list.module#CouponListPageModule' },
   { path: 'sales-table', loadChildren: './merchant/sales-table/sales-table.module#SalesTablePageModule' },
+  { path: 'share', loadChildren: './customer/share/share.module#SharePageModule' },
+  { path: 'application', loadChildren: './merchant/application/application.module#ApplicationPageModule' },
+  { path: 'withdraw', loadChildren: './customer/withdraw/withdraw.module#WithdrawPageModule' },
+  { path: 'complain', loadChildren: './customer/complain/complain.module#ComplainPageModule' },
+  { path: 'info', loadChildren: './merchant/info/info.module#InfoPageModule' },
 ];
 
 @NgModule({

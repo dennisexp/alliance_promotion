@@ -75,3 +75,34 @@
   --ion-color-light-shade: #d7d8da;
   --ion-color-light-tint: #f5f6f9;
 }
+
+.ion-color-yihe {
+  /** 添加一合橙色 **/
+  --ion-color-base: #ff6600;
+  --ion-color-base-rgb: 255, 102, 0;
+  --ion-color-contrast: #ffffff;
+  --ion-color-contrast-rgb: 255, 255, 255;
+  --ion-color-shade: #cc6600;
+  --ion-color-tint: #ff9933;
+}
+
+//修改底部图标的选中颜色以及默认颜色
+ion-tab-button{
+  --color:#8C8E8C;
+  --color-selected:#ff6600;
+}
+
+.ion-toast-yihe{
+    color: #ff6600;
+    font-size: 1.4rem;
+    width:60%;
+    text-align: center;
+    margin: 0 20% 0 20%;
+}
+
+.secondary{
+  color: red;
+  .button {
+            color:aqua;
+          }
+}

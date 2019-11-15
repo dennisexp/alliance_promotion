@@ -1,0 +1,60 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <ion-icon slot="icon-only" name="arrow-back" color="dark"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title color="yihe">投诉</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <div id="step1">
+    <div class="titles">请选择投诉原因</div>
+    <ion-radio-group [(ngModel)]="complain_type" class="type_list">
+      <ion-item lines="full" >
+        <ion-label>虚假活动、活动不真实</ion-label>
+        <ion-radio slot="end" value="虚假活动、活动不真实" [ngClass]="{'radio-checked': complain_type=='虚假活动、活动不真实'}"></ion-radio>
+      </ion-item>
+
+      <ion-item lines="full" class="item_right">
+        <ion-label>诱导分享、诱导关注</ion-label>
+        <ion-radio slot="end" value="诱导分享、诱导关注" [ngClass]="{'radio-checked': complain_type=='诱导分享、诱导关注'}"></ion-radio>
+      </ion-item>
+
+      <ion-item lines="full" class="item_right">
+        <ion-label>欺诈、违法</ion-label>
+        <ion-radio slot="end" value="欺诈、违法" [ngClass]="{'radio-checked': complain_type=='欺诈、违法'}"></ion-radio>
+      </ion-item>
+
+      <ion-item lines="full" class="item_right">
+        <ion-label>暴力、色情</ion-label>
+        <ion-radio slot="end" value="暴力、色情" [ngClass]="{'radio-checked': complain_type=='暴力、色情'}"></ion-radio>
+      </ion-item>
+
+      <ion-item lines="full" class="item_right">
+        <ion-label>其他</ion-label>
+        <ion-radio slot="end" value="其他" [ngClass]="{'radio-checked': complain_type=='其他'}"></ion-radio>
+      </ion-item>
+    </ion-radio-group>
+
+    <ion-button (click)="goStep2()" expand="block" class="btn" >
+      下一步
+    </ion-button>
+  </div>
+
+  <div id="step2" class="d_none">
+    <div class="titles">投诉描述</div>
+    <ion-textarea [(ngModel)]="content" rows="5" class="content"></ion-textarea>
+    <div class="titles">联系方式</div>
+    <ion-input type="number"  [(ngModel)]="phone" class="phone" placeholder="请填写您的联系方式，以便联系"></ion-input>
+
+    <ion-button (click)="submit()" expand="block" class="btn" >
+      提&nbsp;&nbsp;&nbsp;&nbsp;交
+    </ion-button>
+    <ion-button (click)="goStep1()" expand="block" class="btn" color="light">
+      上一步
+    </ion-button>
+  </div>
+
+</ion-content>

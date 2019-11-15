@@ -13,10 +13,13 @@ import { HttpClientModule } from '@angular/common/http';
 //引入配置公共服务
 import { CommonService } from './services/common.service';
 import { StorageService } from './services/storage.service';
+import { UserDaoService } from './services/user.dao.services';
+
+import { CustomerServiceComponent } from './component/customer-service/customer-service.component';
 
 @NgModule({
-  declarations: [AppComponent],
-  entryComponents: [],
+  declarations: [AppComponent,CustomerServiceComponent],
+  entryComponents: [CustomerServiceComponent],
   imports: [BrowserModule, IonicModule.forRoot({
     mode:'ios',  //配置android ios用统一的样式
     backButtonText:''  //修改默认返回文字
@@ -26,6 +29,7 @@ import { StorageService } from './services/storage.service';
     SplashScreen,
     CommonService,
     StorageService,
+    UserDaoService,
     { provide: LocationStrategy, useClass: PathLocationStrategy }
   ],
   bootstrap: [AppComponent]

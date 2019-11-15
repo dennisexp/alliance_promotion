@@ -1,0 +1,44 @@
+.titles{
+    background: #faf7ff;
+	padding: 0 4%;
+	line-height: 3rem;
+	font-size: 1.4rem;
+	color: #737373;
+	font-weight: normal;
+	border-bottom: 1px solid #f0f0f0;
+}
+
+.type_list{
+    padding: 0;
+    margin: 0;
+    width: 100%;   
+    ion-label{
+        font-size: 1.4rem;
+        text-align: left;
+	}
+}
+
+.btn{
+    display: block;
+    width: 90%;
+    margin: 2rem auto;
+}
+
+.content{
+    width: 100%;
+    padding-left: 4%; 
+    border: 1px solid #f0f0f0;
+}
+.phone{
+    //padding-left: 4%; 
+    margin: 0 4%;
+	line-height: 2rem;
+	font-size: 1.4rem;
+	color: #737373;
+	font-weight: normal;
+	border-bottom: 1px solid #f0f0f0;
+}
+
+.d_none{
+    display: none
+}

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-coupon-list',
@@ -7,9 +8,14 @@ import { Component, OnInit } from '@angular/core';
 })
 export class CouponListPage implements OnInit {
 
-  constructor() { }
+  constructor(public navController: NavController) { }
 
   ngOnInit() {
+  }
+
+
+  goBack(){
+    this.navController.navigateBack('/home');
   }
 
 }

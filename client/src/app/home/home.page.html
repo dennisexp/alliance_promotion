@@ -1,14 +1,515 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>
-      Ionic Blank
+    <ion-title color="yihe">
+      免单狂欢节
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <div class="ion-padding">
-    The world is your oyster.
-    <p>If you get lost, the <a target="_blank" rel="noopener" href="https://ionicframework.com/docs/">docs</a> will be your guide.</p>
+<ion-content color="yihe">
+  <div>
+    <!---->
+    <!-- <img src="http://giftadmin.chengzi001.cn/image/20190816/1565953592916883.png"> -->
+
+
+    <!-- <div onclick="window.location.href='/report/index?source_id=456&amp;type=6'" class="complain">
+            投诉
+        </div> <div class="service">
+            客服
+        </div> <div class="audioBox"><audio autoplay="autoplay" preload="" loop="loop" id="audio" src="assets/audio/20.mp3"></audio> <img src="assets/img/audio.png" alt="" class="audioIcon"></div> -->
+
+
+      <div class="adContent">
+        <div class="timeBox">
+          <p class="timeTitle">{{timerLabel}}</p>
+          <p class="time">
+            <span class="timeDetail">{{timeDay}}</span> 天
+            <span class="timeDetail">{{timeHour}}</span> 时
+            <span class="timeDetail">{{timeMinute}}</span> 分
+            <span class="timeDetail">{{timeSecond}}</span> 秒
+          </p>
+        </div>
+
+        <div class="contentBox" style="display: none">
+          <div class="contentTitle">
+            <i class="line"></i>
+              <p class="title">参与用户</p>
+            <i class="line"></i>
+          </div>
+          <div class="content_user">
+            <ion-grid>
+              <ion-row>
+                <!-- <ion-col size="2" *ngFor="let item of productList"> -->
+                <ion-col size="2.4">
+                  <div class="userLogoBox"> 
+                    <img  src="http://thirdwx.qlogo.cn/mmopen/vi_32/dYYdXxvlulpss1QHiavtppXvVbicBKSWXszGYXV3ticLrJb4XMlroiaYAldvStumZfBICFchiaaia4DbOIDcNUUoXlCA/132" />       
+                  </div>
+                  <p class="nickname">一二三四五六七</p>
+                </ion-col>
+                <ion-col size="2.4">
+                  <div class="userLogoBox"> 
+                    <img class="userLogo" src="http://thirdwx.qlogo.cn/mmopen/vi_32/dYYdXxvlulpss1QHiavtppXvVbicBKSWXszGYXV3ticLrJb4XMlroiaYAldvStumZfBICFchiaaia4DbOIDcNUUoXlCA/132" />       
+                  </div>
+                  <p class="nickname">abcdefghijk</p>
+                </ion-col> 
+                <ion-col size="2.4">
+                  <div class="userLogoBox"> 
+                    <img class="userLogo" src="http://thirdwx.qlogo.cn/mmopen/vi_32/dYYdXxvlulpss1QHiavtppXvVbicBKSWXszGYXV3ticLrJb4XMlroiaYAldvStumZfBICFchiaaia4DbOIDcNUUoXlCA/132" />       
+                  </div>
+                  <p class="nickname">一二三四</p>
+                </ion-col> 
+                <ion-col size="2.4">
+                  <div class="userLogoBox"> 
+                    <img class="userLogo" src="http://thirdwx.qlogo.cn/mmopen/vi_32/dYYdXxvlulpss1QHiavtppXvVbicBKSWXszGYXV3ticLrJb4XMlroiaYAldvStumZfBICFchiaaia4DbOIDcNUUoXlCA/132" />       
+                  </div>
+                  <p class="nickname">一二三四五六七</p>
+                </ion-col> 
+                <ion-col size="2.4">
+                  <div class="userLogoBox"> 
+                    <img class="userLogo" src="http://thirdwx.qlogo.cn/mmopen/vi_32/dYYdXxvlulpss1QHiavtppXvVbicBKSWXszGYXV3ticLrJb4XMlroiaYAldvStumZfBICFchiaaia4DbOIDcNUUoXlCA/132" />       
+                  </div>
+                  <p class="nickname">一二三四五六七</p>
+                </ion-col> 
+                <ion-col size="2.4">
+                  <div class="userLogoBox"> 
+                    <img class="userLogo" src="http://thirdwx.qlogo.cn/mmopen/vi_32/dYYdXxvlulpss1QHiavtppXvVbicBKSWXszGYXV3ticLrJb4XMlroiaYAldvStumZfBICFchiaaia4DbOIDcNUUoXlCA/132" />       
+                  </div>
+                  <p class="nickname">一二三四五六七</p>
+                </ion-col> 
+                <ion-col size="2.4">
+                  <div class="userLogoBox"> 
+                    <img class="userLogo" src="http://thirdwx.qlogo.cn/mmopen/vi_32/dYYdXxvlulpss1QHiavtppXvVbicBKSWXszGYXV3ticLrJb4XMlroiaYAldvStumZfBICFchiaaia4DbOIDcNUUoXlCA/132" />       
+                  </div>
+                  <p class="nickname">一二三四五六七</p>
+                </ion-col> 
+                <ion-col size="2.4">
+                  <div class="userLogoBox"> 
+                    <img class="userLogo" src="http://thirdwx.qlogo.cn/mmopen/vi_32/dYYdXxvlulpss1QHiavtppXvVbicBKSWXszGYXV3ticLrJb4XMlroiaYAldvStumZfBICFchiaaia4DbOIDcNUUoXlCA/132" />       
+                  </div>
+                  <p class="nickname">一二三四五六七</p>
+                </ion-col>   
+                <ion-col size="2.4">
+                  <div class="userLogoBox"> 
+                    <img class="userLogo" src="http://thirdwx.qlogo.cn/mmopen/vi_32/dYYdXxvlulpss1QHiavtppXvVbicBKSWXszGYXV3ticLrJb4XMlroiaYAldvStumZfBICFchiaaia4DbOIDcNUUoXlCA/132" />       
+                  </div>
+                  <p class="nickname">一二三四五六七</p>
+                </ion-col>  
+                <ion-col size="2.4">
+                  <div class="userLogoBox"> 
+                    <img class="userLogo" src="http://thirdwx.qlogo.cn/mmopen/vi_32/dYYdXxvlulpss1QHiavtppXvVbicBKSWXszGYXV3ticLrJb4XMlroiaYAldvStumZfBICFchiaaia4DbOIDcNUUoXlCA/132" />       
+                  </div>
+                  <p class="nickname">一二三四五六七</p>
+                </ion-col>  
+                <ion-col size="2.4">
+                  <div class="userLogoBox"> 
+                    <img class="userLogo" src="http://thirdwx.qlogo.cn/mmopen/vi_32/dYYdXxvlulpss1QHiavtppXvVbicBKSWXszGYXV3ticLrJb4XMlroiaYAldvStumZfBICFchiaaia4DbOIDcNUUoXlCA/132" />       
+                  </div>
+                  <p class="nickname">一二三四五六七</p>
+                </ion-col>    
+
+              </ion-row>
+            </ion-grid>
+
+          </div>
+        </div>
+
+        <div class="rankBox" style="display: none">
+          <p class="rankTitle">领红包排行榜</p>
+
+          <ion-grid class="rankListBox">
+            <ion-row>
+              <ion-col size="2">
+                <ion-label class="rankListTitle">排名</ion-label>
+              </ion-col>
+              <ion-col size="4.5">
+                <ion-label class="rankListTitle">用户名</ion-label>
+              </ion-col>
+              <ion-col size="2.5">
+                <ion-label class="rankListTitle">推广人数</ion-label>
+              </ion-col>
+              <ion-col size="3">
+                <ion-label class="rankListTitle">红包奖励</ion-label>
+              </ion-col>
+            </ion-row>
+
+            <ion-row class="rankRow">
+              <ion-col size="2" class="rankListItem">
+                <img class="rankNum1" src="assets/img/rank1.png">
+              </ion-col>
+              <ion-col size="4.5" class="rankListItem">
+                <div class="rankUserHead">
+                  <img src="assets/img/headIcon1.png" class="headIcon">
+                  <img src="http://thirdwx.qlogo.cn/mmopen/vi_32/N7zEsRp42ug3pmhN6xE7eEYNvYpRD9iabkvtbdlne6bkboZP2dkrdt9ZYJoScib4SrVAMeXWQmdFZJ7fvLl79ricg/132" class="rankHeadImg">
+                </div>
+                <p class="rankUserName">只只上半节课上半节课上半节课</p>
+              </ion-col>
+              <ion-col size="2.5" class="rankListItem">
+                <p class="rankPeopleNum">361人</p>
+              </ion-col>
+              <ion-col size="3" class="rankListItem">
+                <p class="rankMoney">10830.00</p>
+              </ion-col>
+            </ion-row>
+
+            <ion-row class="rankRow">
+              <ion-col size="2" class="rankListItem">
+                <img class="rankNum1" src="assets/img/rank2.png">
+              </ion-col>
+              <ion-col size="4.5" class="rankListItem">
+                <div class="rankUserHead">
+                  <img src="assets/img/headIcon2.png" class="headIcon">
+                  <img src="http://thirdwx.qlogo.cn/mmopen/vi_32/N7zEsRp42ug3pmhN6xE7eEYNvYpRD9iabkvtbdlne6bkboZP2dkrdt9ZYJoScib4SrVAMeXWQmdFZJ7fvLl79ricg/132" class="rankHeadImg">
+                </div>
+                <p class="rankUserName">只只上半节课上半节课上半节课</p>
+              </ion-col>
+              <ion-col size="2.5" class="rankListItem">
+                <p class="rankPeopleNum">361人</p>
+              </ion-col>
+              <ion-col size="3" class="rankListItem">
+                <p class="rankMoney">10830.00</p>
+              </ion-col>
+            </ion-row>
+
+            <ion-row class="rankRow">
+              <ion-col size="2" class="rankListItem">
+                <img class="rankNum1" src="assets/img/rank3.png">
+              </ion-col>
+              <ion-col size="4.5" class="rankListItem">
+                <div class="rankUserHead">
+                  <img src="assets/img/headIcon3.png" class="headIcon">
+                  <img src="http://thirdwx.qlogo.cn/mmopen/vi_32/N7zEsRp42ug3pmhN6xE7eEYNvYpRD9iabkvtbdlne6bkboZP2dkrdt9ZYJoScib4SrVAMeXWQmdFZJ7fvLl79ricg/132" class="rankHeadImg">
+                </div>
+                <p class="rankUserName">只只上半节课上半节课上半节课</p>
+              </ion-col>
+              <ion-col size="2.5" class="rankListItem">
+                <p class="rankPeopleNum">361人</p>
+              </ion-col>
+              <ion-col size="3" class="rankListItem">
+                <p class="rankMoney">10830.00</p>
+              </ion-col>
+            </ion-row>
+
+            <ion-row class="rankRow">
+              <ion-col size="2" class="rankListItem">
+                <ion-label>4</ion-label>
+              </ion-col>
+              <ion-col size="4.5" class="rankListItem">
+                <div class="rankUserHead">
+                  <img src="http://thirdwx.qlogo.cn/mmopen/vi_32/N7zEsRp42ug3pmhN6xE7eEYNvYpRD9iabkvtbdlne6bkboZP2dkrdt9ZYJoScib4SrVAMeXWQmdFZJ7fvLl79ricg/132" class="rankHeadImg">
+                </div>
+                <p class="rankUserName">只只上半节课上半节课上半节课</p>
+              </ion-col>
+              <ion-col size="2.5" class="rankListItem">
+                <p class="rankPeopleNum">361人</p>
+              </ion-col>
+              <ion-col size="3" class="rankListItem">
+                <p class="rankMoney">10830.00</p>
+              </ion-col>
+            </ion-row>
+
+            <ion-row class="rankRow">
+              <ion-col size="2" class="rankListItem">
+                <ion-label>5</ion-label>
+              </ion-col>
+              <ion-col size="4.5" class="rankListItem">
+                <div class="rankUserHead">
+                  <img src="http://thirdwx.qlogo.cn/mmopen/vi_32/N7zEsRp42ug3pmhN6xE7eEYNvYpRD9iabkvtbdlne6bkboZP2dkrdt9ZYJoScib4SrVAMeXWQmdFZJ7fvLl79ricg/132" class="rankHeadImg">
+                </div>
+                <p class="rankUserName">只只上半节课上半节课上半节课</p>
+              </ion-col>
+              <ion-col size="2.5" class="rankListItem">
+                <p class="rankPeopleNum">361人</p>
+              </ion-col>
+              <ion-col size="3" class="rankListItem">
+                <p class="rankMoney">10830.00</p>
+              </ion-col>
+            </ion-row>
+
+            <ion-row class="rankRow">
+              <ion-col size="2" class="rankListItem">
+                <ion-label>6</ion-label>
+              </ion-col>
+              <ion-col size="4.5" class="rankListItem">
+                <div class="rankUserHead">
+                  <img src="http://thirdwx.qlogo.cn/mmopen/vi_32/N7zEsRp42ug3pmhN6xE7eEYNvYpRD9iabkvtbdlne6bkboZP2dkrdt9ZYJoScib4SrVAMeXWQmdFZJ7fvLl79ricg/132" class="rankHeadImg">
+                </div>
+                <p class="rankUserName">只只上半节课上半节课上半节课</p>
+              </ion-col>
+              <ion-col size="2.5" class="rankListItem">
+                <p class="rankPeopleNum">361人</p>
+              </ion-col>
+              <ion-col size="3" class="rankListItem">
+                <p class="rankMoney">10830.00</p>
+              </ion-col>
+            </ion-row>
+
+            <ion-row class="rankRow">
+              <ion-col size="2" class="rankListItem">
+                <ion-label>7</ion-label>
+              </ion-col>
+              <ion-col size="4.5" class="rankListItem">
+                <div class="rankUserHead">
+                  <img src="http://thirdwx.qlogo.cn/mmopen/vi_32/N7zEsRp42ug3pmhN6xE7eEYNvYpRD9iabkvtbdlne6bkboZP2dkrdt9ZYJoScib4SrVAMeXWQmdFZJ7fvLl79ricg/132" class="rankHeadImg">
+                </div>
+                <p class="rankUserName">只只上半节课上半节课上半节课</p>
+              </ion-col>
+              <ion-col size="2.5" class="rankListItem">
+                <p class="rankPeopleNum">361人</p>
+              </ion-col>
+              <ion-col size="3" class="rankListItem">
+                <p class="rankMoney">10830.00</p>
+              </ion-col>
+            </ion-row>
+
+            <ion-row class="rankRow">
+              <ion-col size="2" class="rankListItem">
+                <ion-label>8</ion-label>
+              </ion-col>
+              <ion-col size="4.5" class="rankListItem">
+                <div class="rankUserHead">
+                  <img src="http://thirdwx.qlogo.cn/mmopen/vi_32/N7zEsRp42ug3pmhN6xE7eEYNvYpRD9iabkvtbdlne6bkboZP2dkrdt9ZYJoScib4SrVAMeXWQmdFZJ7fvLl79ricg/132" class="rankHeadImg">
+                </div>
+                <p class="rankUserName">只只上半节课上半节课上半节课</p>
+              </ion-col>
+              <ion-col size="2.5" class="rankListItem">
+                <p class="rankPeopleNum">361人</p>
+              </ion-col>
+              <ion-col size="3" class="rankListItem">
+                <p class="rankMoney">10830.00</p>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </div>
+
+        <div class="contentBox">
+          <div class="contentTitle">
+            <i class="line2"></i>
+            <p class="title">联盟商家大礼包</p>
+            <i class="line2"></i>
+          </div>
+         
+          <ion-list class="merchants">
+            <!--列出每个店铺-->
+            <!--店铺的地址等信息-->
+            <ion-list-header class="merchant_box" style='background: url("/assets/img/merchant0.png") 0% 0% / 100% 100%;'>
+              <div class="merchant_info_left">
+                <img src="http://giftadmin.chengzi001.cn/image/20190808/1565251638988221.jpg" class="merchant_img">
+                <div class="merchant_info">
+                  <p class="merchant_title">A08造型</p>
+                  <div class="merchant_contact">
+                    <img src="assets/img/call3.png" class="iconBox">
+                    <p class="contact_text">0739-2988611</p>
+                  </div>
+                  <div class="merchant_contact">
+                    <img src="assets/img/address3.png" class="iconBox">
+                    <p class="contact_text">新步步高斜对面新步步高斜对面新步步高斜对面新步步高斜对面新步步高斜对面 </p>
+                  </div>
+                </div>
+              </div>
+              <div class="getCoupon">点击<br/>领取</div>
+            </ion-list-header>
+            <!--优惠券信息-->
+            <ion-item lines="full">
+              <div class="couponInfo">
+                      <div class="couponContent">
+                        <p class="free">赠</p>
+                        <p class="couponText">原价90元总监洗剪吹造型第一次</p>
+                      </div>
+                      <p class="tip">使用规则：点击本店头像查看免单详情！</p>
+              </div>
+
+              <div class="arrowBox">
+              <img src="assets/img/arrowup.png" class="arrowUpAndDown" style="display: none;">
+              <img src="assets/img/arrowdown.png" class="arrowUpAndDown">
+            </div>
+            <div class="couponNumber">
+              共5张
+            </div>
+
+
+            </ion-item>
+            <ion-item lines="none" style="border-radius: 0 0 0.5rem 0.5rem;">
+              <div class="couponInfo">
+                      <div class="couponContent">
+                        <p class="free">赠</p>
+                        <p class="couponText">原价90元总监洗剪吹造型第一次</p>
+                      </div>
+                      <p class="tip">使用规则：点击本店头像查看免单详情！</p>
+              </div>
+            </ion-item>
+            <ion-item lines="full" style="display: none">
+              Items11
+            </ion-item>
+            <ion-item lines="full" style="display: none">
+              Items12
+            </ion-item>
+            <ion-item lines="none" style="display: none; border-radius: 0 0 0.5rem 0.5rem;">
+              Items3
+            </ion-item>
+
+            
+
+            <!--店铺的地址等信息-->
+            <ion-list-header class="merchant_box" style='background: url("/assets/img/merchant1.png") 0% 0% / 100% 100%;'>
+              <div class="merchant_info_left">
+                <img src="http://giftadmin.chengzi001.cn/image/20190808/1565251638988221.jpg" class="merchant_img">
+                <div class="merchant_info">
+                  <p class="merchant_title">A08造型</p>
+                  <div class="merchant_contact">
+                    <i class="iconBox"><img src="assets/img/call3.png" class="couponShopPhoneIcon"></i>
+                    <p class="contact_text">0739-2988611</p>
+                  </div>
+                  <div class="merchant_contact">
+                    <i class="iconBox"><img src="assets/img/address3.png" class="couponShopAddressIcon"></i>
+                    <p class="contact_text">新步步高斜对面新步步高斜对面新步步高斜对面新步步高斜对面新步步高斜对面 </p>
+                  </div>
+                </div>
+              </div>
+              <div class="getCoupon">点击<br/>领取</div>
+            </ion-list-header>
+            <!--优惠券信息-->
+            <ion-item lines="full">
+              <div class="couponInfo">
+                      <div class="couponContent">
+                        <p class="free">赠</p>
+                        <p class="couponText">原价90元总监洗剪吹造型第一次</p>
+                      </div>
+                      <p class="tip">使用规则：点击本店头像查看免单详情！</p>
+              </div>
+
+              <div class="arrowBox" >
+              <img src="assets/img/arrowup.png" class="arrowUpAndDown" style="display: none;">
+              <img src="assets/img/arrowdown.png" class="arrowUpAndDown">
+            </div>
+            <div class="couponNumber">
+              共5张
+            </div>
+
+
+            </ion-item>
+            <ion-item lines="none" style="border-radius: 0 0 0.5rem 0.5rem;">
+              <div class="couponInfo">
+                      <div class="couponContent">
+                        <p class="free">赠</p>
+                        <p class="couponText">原价90元总监洗剪吹造型第一次</p>
+                      </div>
+                      <p class="tip">使用规则：点击本店头像查看免单详情！</p>
+              </div>
+            </ion-item>
+            <ion-item lines="full" style="display: none">
+              Items11
+            </ion-item>
+            <ion-item lines="full" style="display: none">
+              Items12
+            </ion-item>
+            <ion-item lines="none" style="display: none; border-radius: 0 0 0.5rem 0.5rem;">
+              Items3
+            </ion-item>
+
+            <!--店铺的地址等信息-->
+            <ion-list-header class="merchant_box" style='background: url("/assets/img/merchant2.png") 0% 0% / 100% 100%;'>
+              <div class="merchant_info_left">
+                <img src="http://giftadmin.chengzi001.cn/image/20190808/1565251638988221.jpg" class="merchant_img">
+                <div class="merchant_info">
+                  <p class="merchant_title">A08造型</p>
+                  <div class="merchant_contact">
+                    <i class="iconBox"><img src="assets/img/call3.png" class="couponShopPhoneIcon"></i>
+                    <p class="contact_text">0739-2988611</p>
+                  </div>
+                  <div class="merchant_contact">
+                    <i class="iconBox"><img src="assets/img/address3.png" class="couponShopAddressIcon"></i>
+                    <p class="contact_text">新步步高斜对面新步步高斜对面新步步高斜对面新步步高斜对面新步步高斜对面 </p>
+                  </div>
+                </div>
+              </div>
+              <div class="getCoupon">点击<br/>领取</div>
+            </ion-list-header>
+            <!--优惠券信息-->
+            <ion-item lines="full">
+              <div class="couponInfo">
+                      <div class="couponContent">
+                        <p class="free">赠</p>
+                        <p class="couponText">原价90元总监洗剪吹造型第一次</p>
+                      </div>
+                      <p class="tip">使用规则：点击本店头像查看免单详情！</p>
+              </div>
+
+              <div class="arrowBox">
+              <img src="assets/img/arrowup.png" class="arrowUpAndDown" style="display: none;">
+              <img src="assets/img/arrowdown.png" class="arrowUpAndDown">
+            </div>
+            <div class="couponNumber">
+              共5张
+            </div>
+            </ion-item>
+            <ion-item lines="none" style="border-radius: 0 0 0.5rem 0.5rem;">
+              <div class="couponInfo">
+                      <div class="couponContent">
+                        <p class="free">赠</p>
+                        <p class="couponText">原价90元总监洗剪吹造型第一次</p>
+                      </div>
+                      <p class="tip">使用规则：点击本店头像查看免单详情！</p>
+              </div>
+            </ion-item>
+            <ion-item lines="full" style="display: none">
+              Items11
+            </ion-item>
+            <ion-item lines="full" style="display: none">
+              Items12
+            </ion-item>
+            <ion-item lines="none" style="display: none; border-radius: 0 0 0.5rem 0.5rem;">
+              Items3
+            </ion-item>
+
+
+          </ion-list>
+          
+        </div>
+
+
+        <div class="contentBox">
+          <div class="contentTitle">
+            <i class="line"></i>
+            <p class="title">活动介绍</p>
+            <i class="line"></i>
+          </div>
+        
+        
+        
+        </div>
+
+        <div class="apply" (click)="application()">
+          申请加入一合优品商家联盟
+        </div>
+
+
+      </div>
+    
   </div>
+
+  <!-- <video width="320" height="240" controls="controls">
+  <source src="http://localhost:8801/videos/1499233652663.mp4" type="video/mp4" />
+Your browser does not support the video tag.
+</video> -->
+
+<ion-fab vertical="top" horizontal="end" slot="fixed" class="fab_button fab_right">
+  <ion-fab-button size="small" (click)="playAudio()">
+    <img class="audio_img" id="audio_img" src="assets/img/musical-notes.png" />
+    <audio autoplay="autoplay" preload="" loop="loop" id="audio" src="assets/audio/3.mp3"></audio>
+  </ion-fab-button>
+  <ion-fab-button size="small" (click)="complain()"><p>投诉</p></ion-fab-button>
+  <ion-fab-button size="small" (click)="presentPopover()"><p>客服</p></ion-fab-button>
+</ion-fab>
+
+<ion-fab vertical="bottom" horizontal="start" slot="fixed" class="fab_button">
+  <ion-fab-button size="small" (click)="withdraw()"><p>提现</p></ion-fab-button>
+  <ion-fab-button color="danger" (click)="share()"><p>分享<br />赚红包</p></ion-fab-button>
+</ion-fab>
+
+<ion-fab vertical="bottom" horizontal="end" slot="fixed" class="fab_button">
+  <ion-fab-button size="small" (click)="sales()"><p>营业<br />情况</p></ion-fab-button>
+  <ion-fab-button color="success" (click)="coupon()" style="display: none"><p>我的<br />礼包</p></ion-fab-button>
+  <ion-fab-button color="success" (click)="presentAlertCollect('buy')"><p>领取<br />大礼包</p></ion-fab-button>
+</ion-fab>
+
 </ion-content>
