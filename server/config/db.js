@@ -3,7 +3,7 @@ const mongoose = require('mongoose'),
     Schema = require('../models/schemas.js'),
     Config = require('./config');
     
-    mongoose.Promise = global.Promise;
+mongoose.Promise = global.Promise;
 mongoose.set('useCreateIndex', true);
 mongoose.set('useFindAndModify', false);
 mongoose.set('useCreateIndex', true);
@@ -26,6 +26,7 @@ class MongoDB{
     connect() {
         return new Promise((resolve, reject) => {
             let _that = this;
+            console.log("Mongoose connecting......");            
             if (_that.client === '') {
                 _that.client = mongoose.connect(Config.mongoDB.dbUrl + Config.mongoDB.dbName, { useNewUrlParser: true });
                 mongoose.connection.on('connected', () => {
@@ -33,6 +34,7 @@ class MongoDB{
                     resolve(_that.client);
                 });
                 mongoose.connection.on('disconnected', (err) => {
+                    console.log("Mongoose disconnected");
                     reject(err);
                 });
             } else {
@@ -104,8 +106,6 @@ class MongoDB{
         });
 
     }
-
-
 
     /**
      *
@@ -202,11 +202,11 @@ class MongoDB{
         })
     }
     //    
-    findOneAndModify(table, condition, updateExp) {
+    findOneAndModify(table, condition, updateExp, options) {
         return new Promise((resolve, reject) => {
             try {
                 this.connect().then(() => {
-                    Schema[table].findOneAndUpdate( condition, updateExp, {new: true}, (err, doc) => {
+                    Schema[table].findOneAndUpdate(condition, updateExp, !options?{new: true}:options, (err, doc) => {
                         if (err) {
                             reject(err);
                         } else {

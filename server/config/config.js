@@ -3,7 +3,7 @@ module.exports = {
     //数据库配置信息
     mongoDB: {
         dbUrl: 'mongodb://yihe_user:5203344_zmkm@localhost:27017/',
-        dbName: 'yihemall',
+        dbName: 'alliance_promotion',
     },
 
     //服务器的域名
@@ -18,7 +18,10 @@ module.exports = {
     page_size: 20,
     
     //最低提现金额
-    withdraw_threshold: 10,
+    withdraw_threshold: 30,
+
+    //大礼包的
+    price: 0.01,
 
     //微信公众号的配置和商户配置
     weixin: {
@@ -28,6 +31,6 @@ module.exports = {
         //微信公众号的配置
         mp_app_id: "wxde4393c66d04cfd0",
         mp_app_secret: "c6c3b61b62b624662ae329ff1eedf0e0",
-    }
-    
+    },
+
 }
