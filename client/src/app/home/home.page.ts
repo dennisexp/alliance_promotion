@@ -72,7 +72,7 @@ export class HomePage extends BaseUI {
     let code: any;
     
     this.activatedRoute.queryParams.subscribe((data: any) => {
-      console.log("data: ", data);
+      //console.log("data: ", data);
       // let d = moment(new Date()).format();
       // console.log("date", d);
       if (data && data.code) {
@@ -253,7 +253,7 @@ export class HomePage extends BaseUI {
     const alertCon = await this.alertController.create({
       backdropDismiss:false,
       header: '领取免单大礼包',
-      message: '可通过微信支付直接购买领取，<br />或者通过输入验证码激活领取',
+      message: '可通过微信支付直接购买领取，<br />或者通过输入激活码激活领取',
       inputs: [
         {
           name: 'radio1',
@@ -265,7 +265,7 @@ export class HomePage extends BaseUI {
         {
           name: 'radio2',
           type: 'radio',
-          label: '验证码激活',
+          label: '激活码激活',
           value: 'activate',
           checked: ("activate"==type)
         }
@@ -304,13 +304,15 @@ export class HomePage extends BaseUI {
       super.presentFailureToast(this.toastController, "账号未经授权，请刷新页面后重试");
       return;
     }
+    
+    //await this.refreshUser(10); 
 
     let old_name = this.userinfo.name ? this.userinfo.name : "";
     let old_mobilephone = this.userinfo.name ? this.userinfo.mobilephone : "";
 
-    console.log("old_userinfo", this.userinfo);
-    console.log("old_name", old_name);
-    console.log("old_mobilephone", old_mobilephone);
+    // console.log("old_userinfo", this.userinfo);
+    // console.log("old_name", old_name);
+    // console.log("old_mobilephone", old_mobilephone);
     const alertCon = await this.alertController.create({
       backdropDismiss:false,
       header: '购买免单大礼包',
@@ -342,7 +344,10 @@ export class HomePage extends BaseUI {
           handler: (data) => {
             //console.log(data);
             let name = data.name.trim();
-            let mobilephone = data.mobilephone.trim();
+            let mobilephone = data.mobilephone;
+
+            this.userinfo.name = name;
+            this.userinfo.mobilephone = mobilephone;
 
             if (name.length < 2) {
               super.presentFailureToast(this.toastController, "请输入您的姓名");
@@ -368,7 +373,7 @@ export class HomePage extends BaseUI {
               sign: sign
             }
 
-            console.log("sign",sign);
+            //console.log("sign",sign);
             
             //充服务器端调取并拼装订单信息//公众号支付
             this.common.ajaxPost("weixin/mp_pay", order).then(async (response: any) => {
@@ -393,8 +398,8 @@ export class HomePage extends BaseUI {
               }
             }).catch(error => {
               //console.log("1");
-              console.log("状态异常，支付失败");
-              console.log(error);
+              //console.log("状态异常，支付失败");
+              //console.log(error);
               super.presentFailureToast(this.toastController, "状态异常，支付失败");
             });
           }
@@ -418,17 +423,19 @@ export class HomePage extends BaseUI {
       return;
     }
 
+    //await this.refreshUser(10); 
+
     let old_name = this.userinfo.name ? this.userinfo.name : "";
     let old_mobilephone = this.userinfo.name ? this.userinfo.mobilephone : "";
 
-    console.log("old_userinfo", this.userinfo);
-    console.log("old_name", old_name);
-    console.log("old_mobilephone", old_mobilephone);
+    // console.log("old_userinfo", this.userinfo);
+    // console.log("old_name", old_name);
+    // console.log("old_mobilephone", old_mobilephone);
 
     const alertCon = await this.alertController.create({
       backdropDismiss:false,
       header: '激活免单大礼包',
-      message: '验证码验证通过后<br />即可获得价值2万多元的免单大礼包<br />名单中所有商家的福利券全部自动激活<br />有效期内所有商家均可享受免单服务<br />不限本人使用，不限、不限、不限',
+      message: '激活码验证通过后<br />即可获得价值2万多元的免单大礼包<br />名单中所有商家的福利券全部自动激活<br />有效期内所有商家均可享受免单服务<br />不限本人使用，不限、不限、不限',
       inputs: [
         {
           name: 'name',
@@ -446,7 +453,7 @@ export class HomePage extends BaseUI {
           name: 'code',
           type: 'text',
           value: '',
-          placeholder: '请输入有效验证码'
+          placeholder: '请输入有效激活码'
         }
       ],
       buttons: [
@@ -460,11 +467,14 @@ export class HomePage extends BaseUI {
         }, {
           text: '激活',
           handler: (data) => {
-            console.log(data);
+            //console.log(data);
             //console.log(data);
             let name = data.name.trim();
-            let mobilephone = data.mobilephone.trim(); 
+            let mobilephone = data.mobilephone; 
             let code = data.code.trim();
+
+            this.userinfo.name = name;
+            this.userinfo.mobilephone = mobilephone;
 
             if (name.length < 2) {
               super.presentFailureToast(this.toastController, "请输入您的姓名");
@@ -477,49 +487,50 @@ export class HomePage extends BaseUI {
             }
 
             if (code.length != 6) {
-              super.presentFailureToast(this.toastController, "请输入6位验证码");
+              super.presentFailureToast(this.toastController, "请输入6位激活码");
               return false;
             }
 
             let sign = this.common.sign({
               openid: this.userinfo.openid,
-              name: name,
               mobilephone: mobilephone,
+              name: name,
               code: code,
               salt: salt
             });
 
             let post = {
               openid: this.userinfo.openid,
-              name: name,
               mobilephone: mobilephone,
+              name: name,
               code: code,
               sign: sign
             }
 
-            console.log("sign",sign);
-            
+            //console.log("sign", sign);
+                                    
             //充服务器端调取并拼装订单信息//公众号支付
             this.common.ajaxPost("user/activation", post).then(async (response: any) => {
-              console.log(response);
-              if (response && response.status.code == 1) {
-                let userinfo = response.data;
+              if (response && response['status'].code == 1) {
+                this.userinfo = response['data'];
                 //console.log(userinfo);
                 //刷新用户
+
+                super.presentToast(this.toastController, response['status'].message);
 
 
                 
           
               } else {
-                super.presentFailureToast(this.toastController, response.status.message);
+                super.presentFailureToast(this.toastController, response['status'].message);
+                this.presentAlertActivate();
                 return false;
               }
-            }).catch(error => {
-              //console.log("1");
-              console.log("状态异常，激活失败");
-              console.log(error);
-              super.presentFailureToast(this.toastController, "状态异常，激活失败");
+
             });
+            
+            
+    
           }
         }
       ]
@@ -543,7 +554,7 @@ export class HomePage extends BaseUI {
       // 使用以上方式判断前端返回,微信团队郑重提示：
             //res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
         //刷新userinfo
-        this.refreshUser();       
+        this.refreshUser(3000);       
         
       } else if (res.err_msg == "get_brand_wcpay_request:fail") {
         super.presentFailureToast(this.toastController, "支付失败，请重试。");
@@ -557,7 +568,7 @@ export class HomePage extends BaseUI {
   /**
    * 延时3秒刷新用户信息
    */
-  async refreshUser() {
+  async refreshUser(interval) {
     //let salt = this.storage.get("salt_" + this.userinfo.openid);
     let salt = "5203344";
     if (!this.userinfo.openid || this.userinfo.openid.trim() == "" || !salt || salt.trim() == "") {
@@ -568,11 +579,12 @@ export class HomePage extends BaseUI {
     setTimeout(async () => {
       let result = await this.userDao.getUserInfo(this.userinfo.openid, salt);
       if (result.status == 1) {
+        //console.log("refreshUser OK");        
         this.userinfo = result.data;
       } else {
         super.presentFailureToast(this.toastController, result.message);
       }
-    }, 3000);
+    }, interval);
   }
 
   /**

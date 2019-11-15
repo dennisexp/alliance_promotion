@@ -5,7 +5,8 @@ const MongoDB = require('../config/db');
 const userCtrl = require('../controller/user');
 
 router.get('/', async (ctx, next) => {
-  ctx.body = 'this a users response! '+Util.getYiheCode()+"  "+Util.getTradeNo("wx");
+  //ctx.body = 'this a users response! ' + Util.uuid(6, 32);
+  ctx.success("","sss",2)
 });
 
 
@@ -187,18 +188,100 @@ router.post('/withdraw', async (ctx, next) => {
         if (res.status == 1) {
           ctx.success(userinfo);
         } else {
-          ctx.error("提现操作失败，请返回重试或联系管理员");
+          ctx.error("提现操作失败，请返回重试或联系客服");
         }
       });
       
     } else {
-      ctx.error("提现操作失败，请返回重试或联系管理员");
+      ctx.error("提现操作失败，请返回重试或联系客服");
     }
 
   } else {
     ctx.error(verification.message);
   }
 
+});
+
+/**
+ * 用激活码激活
+ */
+router.post('/activation', async (ctx, next) => {
+  let openid = ctx.request.body.openid;
+  let name = ctx.request.body.name;
+  let mobilephone = ctx.request.body.mobilephone;
+  let code = ctx.request.body.code;
+  let sign = ctx.request.body.sign;
+  
+  if (!openid || !name || !mobilephone || !code ||!sign) {
+    ctx.error("参数不完整");
+    return;
+  }
+
+  let params = {
+    mobilephone: mobilephone,
+    openid: openid,
+    name: name,
+    code: code,
+  }
+
+  let verification = await userCtrl.verify(openid, params, sign);
+
+  //console.log("verification", verification);
+
+  //  签名正确，修改账户
+  if (verification.status == 1) {
+    let userinfo = verification.data;
+
+    //先更新用户信息
+    let res = await userCtrl.update(openid, { name: name, mobilephone: mobilephone });
+    if (res.status == 1) {
+      userinfo = res.data;
+    } else {
+      console.log("无法获取用户激信息。", res.message);
+      ctx.error("无法获取用户激信息，请重试或联系客服");
+      return;
+    }
+
+    if (userinfo.grade >= 1) {
+      ctx.success(userinfo, "该用户已激活，无需再次激活");
+      return;
+    }
+
+    //再去核对验证码，先把空格去了，然后再全部变成大写字母
+    code = code.replace(/\s*/g, "").toUpperCase();
+
+    //签名验证通过，操作提现: user表和withdraw表
+    let result = await MongoDB.findOneAndModify("activation", { "code": code, "status":0 }, {
+      $set: {
+        "name": name,
+        "openid": openid,
+        "status": 1,
+        "mobilephone": mobilephone,
+        "activate_time": new Date()
+      }
+    });
+
+    console.log("激活结果", result);
+
+    //user表操作成功，接着将提用户状态改为付费用户
+    if (result.status == 1 && result.data!=null) {
+      let ret = await userCtrl.update(openid, { grade: 1, name: name, mobilephone: mobilephone });
+      if (ret.status == 1) {
+        console.log("用户激活成功。", ret.message);
+        ctx.success(ret.data, "激活成功");
+      } else {
+        console.log("用户激活失败。", ret.message);
+        ctx.error("用户激活失败，请联系客服");
+      }
+
+    } else {
+      //验证不通过
+      ctx.error("激活码不正确，请重试或联系客服购买激活码");;
+    }
+
+  } else {
+    ctx.error(verification.message);
+  }
 
 });
 

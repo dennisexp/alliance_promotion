@@ -1,6 +1,7 @@
 const MongoDB = require('./db.js');
 const Md5 = require('md5');
 const Moment = require('moment');
+const Conifg = require("./config");
 
 module.exports = {
 
@@ -21,7 +22,7 @@ module.exports = {
      * @param {*} radix 基数
      */
     uuid(len, radix) {
-        var chars = '8PF3KCL4Q1WDH0RTE5MX2NGJA9VYS7BU6'.split('');
+        var chars = '8PF3KCL4Q1WDHRTE5MX2NGJA9VYS7BU6'.split('');//32位去掉0，I，O，Z
         var uuid = [], i;
         radix = radix || chars.length;
     
@@ -84,11 +85,24 @@ module.exports = {
         return Md5(tempStr);
     },
 
+    /**
+     * 生成6位激活码，输出全是大写
+     * @param {*} json 姓名，手机号 
+     */
+    activateCode(json) {
+        if (!json || !json.name || !json.mobilephone) {
+            return null;
+        }
+
+        json.yiheSalt = Conifg.yiheSalt;
+        console.log("json", json);
+        let rawCode = this.sign(json);
+        return rawCode.substr(16,6).toUpperCase();
+    },
 
     /**
      * 加密密码
      * @param  {[type]} data [description]
-     * @return {[type]}      [description]
      */
     hashPwd(data){
         return Md5(data);

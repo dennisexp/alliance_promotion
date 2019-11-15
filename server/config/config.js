@@ -23,6 +23,9 @@ module.exports = {
     //大礼包的
     price: 0.01,
 
+    //生成激活码的salt
+    yiheSalt:"S2O33A4@Mann1n9",
+
     //微信公众号的配置和商户配置
     weixin: {
         partner_id: "1521944881",//微信支付分配的商户号

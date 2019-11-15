@@ -26,7 +26,7 @@ let collection = {
         password: { type: String, required: true },
         salt: String,
         type: { type: Number, default: 1 },  //会员类型，1：用户，2：用户兼商户
-        grade: { type: Number, default: 0 },//1：未付款（30元），1：已付款(或者已激活为有券用户)的普通用户（70元），2：推广员（100元），3：合伙人（120），4：超人（150），6：Achilles（190）
+        grade: { type: Number, default: 0 },//0：未付款（30元），1：已付款(或者已激活为有券用户)的普通用户（70元），2：推广员（100元），3：合伙人（120），4：超人（150），6：Achilles（190）
         status: { type: Number, default: 1 },
         create_time: { type: Date, default: Date.now },
         last_login_time: Date,
@@ -189,6 +189,17 @@ let collection = {
         submit_time: { type: Date, default: Date.now }  //申请时间
     },
 
+    /**  激活码登记表 */
+    activation: {
+        aid: { type: Number, unique: true },
+        openid: { type: String },
+        name: {type: String},
+        mobilephone: { type: String },
+        code: { type: String, unique: true, required: true },
+        status: { type: Number, default: 0 },         //是否正常(已使用1，未使用0，作废-1，)
+        activate_time: { type: Date }  //激活时间
+    },
+
     //序列自增长用
     counter: {
         "key": { type: String, required: true },
@@ -206,6 +217,7 @@ module.exports = {
     withdraw: mongoose.model('withdraw', collection['withdraw'], 'withdraw_info'),
     feedback: mongoose.model('feedback', collection['feedback'], 'feedbacks'),
     application: mongoose.model('application', collection['application'], 'applications'),
+    activation: mongoose.model('activation', collection['activation'], 'activations'),
     counter: mongoose.model('counter', collection['counter'], 'counters')
 };
 

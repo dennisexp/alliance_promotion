@@ -44,7 +44,7 @@ module.exports = {
             userinfo.password = "";
             return { "status": 1, "message": "签名正确", "data": userinfo };
         } else {
-            return { "status": 0, "message": "签名错误" };
+            return { "status": 0, "message": "操作未经授权" };
         }
     },
 
@@ -58,18 +58,9 @@ module.exports = {
             return { "status": 0, "message": "参数错误" };
         };
 
-        // let res = await MongoDB.findInTable('user', {
-        //     "openid": openid,
-        //     "status": 1
-        // });
-
-        // if (res.length == 0) { //找不到该用户，则返回
-        //     return { "status": 0, "message": "找不到用户信息" };
-        // }
-
         let options = { upsert: false, new: true };
         let res = await MongoDB.findOneAndModify("user", { "openid": openid }, info, options);
-        console.log("-----update-----",res);
+        //console.log("-----update-----",res);
         if (res.status == 1) {
             let userinfo = res.data;
             userinfo.salt = "";//去掉这个

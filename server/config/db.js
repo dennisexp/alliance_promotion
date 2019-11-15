@@ -26,8 +26,8 @@ class MongoDB{
     connect() {
         return new Promise((resolve, reject) => {
             let _that = this;
-            console.log("Mongoose connecting......");            
             if (_that.client === '') {
+                console.log("Mongoose connecting......");
                 _that.client = mongoose.connect(Config.mongoDB.dbUrl + Config.mongoDB.dbName, { useNewUrlParser: true });
                 mongoose.connection.on('connected', () => {
                     console.log(`Mongoose connected on ${Config.mongoDB.dbUrl + Config.mongoDB.dbName}`);
