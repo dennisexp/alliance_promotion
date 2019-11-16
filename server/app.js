@@ -21,7 +21,7 @@ const index = require('./routes/index')
 const user = require('./routes/users')
 const weixin = require('./routes/weixin')
 
-const port = process.env.PORT || config.domain.port
+//const port = process.env.PORT || config.domain.port
 
 // error handler
 onerror(app);
@@ -33,16 +33,12 @@ router.use(index);
 
 // middlewares
 app.use(bodyparser())
-  .use(json())
+  //.use(json())
   .use(jsonp())
   .use(cors())   //配置后台允许跨域
   .use(logger())  
   .use(require('koa-static')(__dirname + '/public'))
-  .use(views(path.join(__dirname, '/views'), {
-    options: {settings: {views: path.join(__dirname, 'views')}},
-    map: {'njk': 'nunjucks'},
-    extension: 'njk'
-  }))
+  .use(views(path.join(__dirname, '/views'), { options: {settings: {views: path.join(__dirname, 'views')}}, map: {'njk': 'nunjucks'}, extension: 'njk' }))
   .use(response)
   .use(router.routes())
   .use(router.allowedMethods())

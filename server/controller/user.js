@@ -61,7 +61,7 @@ module.exports = {
         let options = { upsert: false, new: true };
         let res = await MongoDB.findOneAndModify("user", { "openid": openid }, info, options);
         //console.log("-----update-----",res);
-        if (res.status == 1) {
+        if (res.status == 1 && res.data) {
             let userinfo = res.data;
             userinfo.salt = "";//去掉这个
             userinfo.password = "";
@@ -72,7 +72,43 @@ module.exports = {
         
     },
 
-    getSalt() {
+    async getInfoByInvitationCode(code) {
+        if (!code || code.trim()=="0" || code==0) {
+            return { "status": 0, "message": "参数错误" };
+        };
+
+        let condition = [
+        {
+            $match: {
+                "invitation_code": code.trim(),
+                "status": 1
+            }
+        },
+        {
+            $lookup: {
+                from: "grade",
+                localField: "grade",
+                foreignField: "gid",
+                as: "grade"
+            }
+        },
+        {
+            $project: {
+                "_id": 0,
+                openid: 1,
+                nickname: 1,
+                grade: 1
+            }
+        },
+        { $limit: 1 }];
+        
+        let res = await MongoDB.aggregate("user", condition);
+            console.log("by code ", res);
+        if (res.length > 0) {
+            return { "status": 1, "message": "SUCCESS", "data": res.data[0] };
+        } else {
+            return { "status": 0, "message": "找不到用户信息" };
+        }
         
     },
 

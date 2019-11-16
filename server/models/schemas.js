@@ -17,20 +17,20 @@ let collection = {
 
     user: {   //用户模型
         openid: { type: String, unique: true, trim: true },
-        name: { type: String, default: "一合新用户", trim: true },//真实姓名
+        name: { type: String, default: "", trim: true },//真实姓名
         nickname: { type: String, trim: true },   //登录的用户名，须唯一
-        mobilephone: { type: Number, default: 0, trim: true },
+        mobilephone: { type: Number, trim: true },
         invitation_code: String,  //邀请码，推荐码  唯一  字母和数字组合
         sex: Number,//值为1时是男性，值为2时是女性，值为0时是未知
         headimgurl: String,
-        password: { type: String, required: true },
+        password: { type: String },
         salt: String,
         type: { type: Number, default: 1 },  //会员类型，1：用户，2：用户兼商户
-        grade: { type: Number, default: 0 },//0：未付款（30元），1：已付款(或者已激活为有券用户)的普通用户（70元），2：推广员（100元），3：合伙人（120），4：超人（150），6：Achilles（190）
+        grade: { type: Number, default: 0 },//0：未付款（30元），1：已付款(或者已激活为有券用户)的普通用户（70元），2：推广员（100元），3：合伙人（120），4：领导人（150），6：Achilles（190）
         status: { type: Number, default: 1 },
         create_time: { type: Date, default: Date.now },
         last_login_time: Date,
-        parent_id: { type: String, default: "一合用户" },//上级节点
+        parent_id: { type: String, default: "0" },//上级节点
         balance: {
             bonus: { type: Number, default: 0 },
             withdrawing: { type: Number, default: 0 },
@@ -68,9 +68,9 @@ let collection = {
             
         },
         address: {
-            province: String, //用户个人资料填写的省份
             city: String, //普通用户个人资料填写的城市
-            country: String, //国家，如中国为CN
+            province: String, //用户个人资料填写的省份
+            country: String //国家，如中国为CN
         }
         
     },
@@ -122,7 +122,7 @@ let collection = {
         oid: { type: Number, unique: true },
         openid: { type: String, required: true },
         nickname: String, //微信的nickname
-        parent_id: { type: String },
+        parent_code: { type: String },
         subject: String,//订单摘要，描述等
         trade_no: String,  //对外业务编号
         payment_no: String,  //微信发回来的付款编号 

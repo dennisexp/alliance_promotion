@@ -46,8 +46,8 @@ export class WithdrawPage extends BaseUI implements OnInit {
     	this.userinfo.openid=data.openid;
     });
 
-    //let salt = this.storage.get("salt_" + this.userinfo.openid);
-    let salt = "5203344";
+    let salt = this.storage.get("salt_" + this.userinfo.openid);
+    //let salt = "5203344";
     let result = await this.userDao.getUserInfo(this.userinfo.openid, salt);
     if (result.status == 1) {
       this.userinfo = result.data;
@@ -141,8 +141,8 @@ export class WithdrawPage extends BaseUI implements OnInit {
       return;
     }
 
-    //let salt = this.storage.get("salt_" + this.userinfo.openid);
-    let salt = "5203344";
+    let salt = this.storage.get("salt_" + this.userinfo.openid);
+    //let salt = "5203344";
     if (!this.userinfo.openid || this.userinfo.openid.trim() == "" || !salt || salt.trim() == "") {
       super.presentFailureToast(this.toastController, "账号未经授权，请返回主页面后重试");
       return;
@@ -185,8 +185,8 @@ export class WithdrawPage extends BaseUI implements OnInit {
       return {status: 0, message:"请输入账户信息"};
     }
 
-    //let salt = this.storage.get("salt_" + this.userinfo.openid);
-    let salt = "5203344";
+    let salt = this.storage.get("salt_" + this.userinfo.openid);
+    //let salt = "5203344";
     if (!this.userinfo.openid || this.userinfo.openid.trim()=="" || !salt || salt.trim() == "") {
       return {status: 0, message:"账号未经授权，请返回主页面后重试"};
     }

@@ -6,7 +6,29 @@ const userCtrl = require('../controller/user');
 
 router.get('/', async (ctx, next) => {
   //ctx.body = 'this a users response! ' + Util.uuid(6, 32);
-  ctx.success("","sss",2)
+  
+
+  //生成邀请码，需要和数据库确认下，是否重复
+  return;
+  let invitation_code = "5203344";//Util.uuid(8,32);
+  let same = true;
+  while (same) {
+    let ret = await MongoDB.findInTable("user", { invitation_code: invitation_code });
+    console.log("activeCode", ret);
+    if (ret.length == 0) {
+      same = false;//没有重复的，可用
+      console.log("activeCode OK", invitation_code);
+    } else {
+      //有重复的，再来一个
+      
+      invitation_code = Util.uuid(8, 32);
+      console.log("有重复，再来一个", invitation_code);
+    }
+  }
+
+  ctx.success(invitation_code)
+  
+  
 });
 
 
@@ -59,7 +81,7 @@ router.post('/info', async (ctx, next) => {
 
     let newData = JSON.parse(info);
     await MongoDB.findOneAndModify("user", { "openid": openid }, newData).then(async res => {
-      if (res.status == 1) {
+      if (res.status == 1 && res.data) {
         let userinfo = res.data;
         userinfo.salt = "";
         userinfo.password = "";
@@ -105,7 +127,7 @@ router.post('/alipay_info', async (ctx, next) => {
         "account.account_name": account_name,
         "account.account_number": account_number
     }).then(async res => {
-      if (res.status == 1) {
+      if (res.status == 1 && res.data) {
         let userinfo = res.data;
         userinfo.salt = "";
         userinfo.password = "";

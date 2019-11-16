@@ -70,47 +70,64 @@ export class HomePage extends BaseUI {
   
   ngOnInit() {
     let code: any;
+    let parent_code: any;
     
     this.activatedRoute.queryParams.subscribe((data: any) => {
-      //console.log("data: ", data);
+      console.log("data: ", data);
       // let d = moment(new Date()).format();
       // console.log("date", d);
       if (data && data.code) {
         code = data.code;
       }
+
+      if (data && data.state) {
+        try {
+          parent_code = JSON.parse(data.state).parent_code;
+        } catch(e){
+          console.log("state error: ", data.state);
+        }
+      }
+
+      if (data && data.openid) {
+        this.userinfo.openid = data.openid;
+      }
+
     });
 
-    code = "021sIgA41MC5pT1p1Nz415SvA41sIgAg";
-    return;
+    //code = "021sIgA41MC5pT1p1Nz415SvA41sIgAg";
+    //return;
 
-    //公众号验证，获得code，进而获得openid
-    //如果code为空，则获取code
-    if (!code || code.trim() == "") {
-      let api = "weixin/authorizeURL?redirect_uri=" + encodeURIComponent(this.common.config.app_domain + "/home");
+    let openid = this.userinfo.openid;
+    if (!openid || openid.trim() == "") {
+      //正常的用户没有salt，是不是应该刷新一下？
+
+    } else if (!code || code.trim() == "") {
+      //公众号验证，获得code，进而获得openid
+      //如果code为空，则获取code
+      let api = "weixin/authorizeURL?redirect_uri="+encodeURIComponent(this.common.config.app_domain + "home")+"&parent_code="+parent_code;
       this.common.ajaxGet(api).then((response:any)=>{
-        console.log("response",response);
+        //console.log("response",response);
         if (response && response.status.code==1) {
-          //window.open(response.data);
-          console.log('打开url',response.data);
-        } else {
-          alert("无法获得微信的验证url，请重试。");
-        }
-      })
-      //如果code已经获取，那么获取openid以及用户的信息等
-    } else {
-      let api = "weixin/userinfo?code=" + code;
-      this.common.ajaxGet(api).then((response:any)=>{
-        console.log("response: ",response);
-        if (response && response.status.code == 1) {
-          this.userinfo = response.data[0];//获得用户信息
-          this.storage.set("salt_" + this.userinfo.openid, this.userinfo.salt);
-          this.userinfo.salt = "";//删除敏感数据
-          console.log("userinfo",this.userinfo);
+          window.location=decodeURIComponent(response.data)+"";
+          //console.log('打开url',response.data);
         } else {
           super.presentFailureToast(this.toastController, "无法获得微信用户的信息，请重试");
         }
       })
-      
+      //如果code已经获取，那么获取openid以及用户的信息等
+    } else {
+      let api = "weixin/userinfo?code=" + code+"&parent_code="+parent_code;
+      this.common.ajaxGet(api).then((response:any)=>{
+        //console.log("response: ",response);
+        if (response && response.status.code == 1) {
+          this.userinfo = response.data;//获得用户信息
+          this.storage.set("salt_" + this.userinfo.openid, this.userinfo.salt);
+          this.userinfo.salt = "";//删除敏感数据
+          //console.log("userinfo",this.userinfo);
+        } else {
+          super.presentFailureToast(this.toastController, "无法获得微信用户的信息，请重试");
+        }
+      })
     }
     
   }
@@ -118,7 +135,6 @@ export class HomePage extends BaseUI {
   ionViewDidEnter() {
     this.processTime();
   }
-
 
   processTime() {
     const now = new Date();
@@ -298,8 +314,8 @@ export class HomePage extends BaseUI {
    * 微信支付购买
    */
   async presentAlertBuy() {
-    //let salt = this.storage.get("salt_" + this.userinfo.openid);
-    let salt = "5203344";
+    let salt = this.storage.get("salt_" + this.userinfo.openid);
+    //let salt = "5203344";
     if (!salt) {
       super.presentFailureToast(this.toastController, "账号未经授权，请刷新页面后重试");
       return;
@@ -307,8 +323,8 @@ export class HomePage extends BaseUI {
     
     //await this.refreshUser(10); 
 
-    let old_name = this.userinfo.name ? this.userinfo.name : "";
-    let old_mobilephone = this.userinfo.name ? this.userinfo.mobilephone : "";
+    // let old_name = this.userinfo.name ? this.userinfo.name : "";
+    // let old_mobilephone = this.userinfo.mobilephone ? this.userinfo.mobilephone : "";
 
     // console.log("old_userinfo", this.userinfo);
     // console.log("old_name", old_name);
@@ -321,13 +337,13 @@ export class HomePage extends BaseUI {
         {
           name: 'name',
           type: 'text',
-          value: old_name,
+          value: this.userinfo.name,
           placeholder: '请输入真实姓名'
         },
         {
           name: 'mobilephone',
           type: 'number',
-          value: old_mobilephone,
+          value: this.userinfo.mobilephone,
           placeholder: '请输入手机号码'
         }
       ],
@@ -354,7 +370,7 @@ export class HomePage extends BaseUI {
               return false;
             }
 
-            if (mobilephone.length != 11 || !this.common.validateMobilephoneNum(mobilephone)) {
+            if ((""+mobilephone).length != 11 || !this.common.validateMobilephoneNum(mobilephone+"")) {
               super.presentFailureToast(this.toastController, "请输入正确的手机号码");
               return false;
             }
@@ -397,9 +413,9 @@ export class HomePage extends BaseUI {
                 super.presentFailureToast(this.toastController, "支付失败");
               }
             }).catch(error => {
-              //console.log("1");
+              console.log("1");
               //console.log("状态异常，支付失败");
-              //console.log(error);
+              console.log(error);
               super.presentFailureToast(this.toastController, "状态异常，支付失败");
             });
           }
@@ -416,8 +432,8 @@ export class HomePage extends BaseUI {
    */
   async presentAlertActivate() {
 
-    //let salt = this.storage.get("salt_" + this.userinfo.openid);
-    let salt = "5203344";
+    let salt = this.storage.get("salt_" + this.userinfo.openid);
+    //let salt = "5203344";
     if (!salt) {
       super.presentFailureToast(this.toastController, "账号未经授权，请刷新页面后重试");
       return;
@@ -426,7 +442,7 @@ export class HomePage extends BaseUI {
     //await this.refreshUser(10); 
 
     let old_name = this.userinfo.name ? this.userinfo.name : "";
-    let old_mobilephone = this.userinfo.name ? this.userinfo.mobilephone : "";
+    let old_mobilephone = this.userinfo.mobilephone ? this.userinfo.mobilephone : 0;
 
     // console.log("old_userinfo", this.userinfo);
     // console.log("old_name", old_name);
@@ -440,13 +456,13 @@ export class HomePage extends BaseUI {
         {
           name: 'name',
           type: 'text',
-          value: old_name,
+          value: this.userinfo.name,
           placeholder: '请输入真实姓名'
         },
         {
           name: 'mobilephone',
           type: 'number',
-          value: old_mobilephone,
+          value: this.userinfo.mobilephone,
           placeholder: '请输入手机号码'
         },
         {
@@ -468,7 +484,7 @@ export class HomePage extends BaseUI {
           text: '激活',
           handler: (data) => {
             //console.log(data);
-            //console.log(data);
+            console.log(data);
             let name = data.name.trim();
             let mobilephone = data.mobilephone; 
             let code = data.code.trim();
@@ -481,7 +497,7 @@ export class HomePage extends BaseUI {
               return false;
             }
 
-            if (mobilephone.length != 11 || !this.common.validateMobilephoneNum(mobilephone)) {
+            if ((""+mobilephone).length != 11 || !this.common.validateMobilephoneNum(mobilephone+"")) {
               super.presentFailureToast(this.toastController, "请输入正确的手机号码");
               return false;
             }
@@ -557,6 +573,7 @@ export class HomePage extends BaseUI {
         this.refreshUser(3000);       
         
       } else if (res.err_msg == "get_brand_wcpay_request:fail") {
+
         super.presentFailureToast(this.toastController, "支付失败，请重试。");
       } else {
         //支付失败
@@ -569,8 +586,8 @@ export class HomePage extends BaseUI {
    * 延时3秒刷新用户信息
    */
   async refreshUser(interval) {
-    //let salt = this.storage.get("salt_" + this.userinfo.openid);
-    let salt = "5203344";
+    let salt = this.storage.get("salt_" + this.userinfo.openid);
+    //let salt = "5203344";
     if (!this.userinfo.openid || this.userinfo.openid.trim() == "" || !salt || salt.trim() == "") {
       super.presentFailureToast(this.toastController, "账号未经授权，请刷新页面后重试");
       return;
@@ -599,8 +616,8 @@ export class HomePage extends BaseUI {
       return;
     }
 
-    //let salt = this.storage.get("salt_" + this.userinfo.openid);
-    let salt = "5203344";
+    let salt = this.storage.get("salt_" + this.userinfo.openid);
+    //let salt = "5203344";
     if (!this.userinfo.openid || this.userinfo.openid.trim() == "" || !salt || salt.trim() == "") {
       super.presentFailureToast(this.toastController, "账号未经授权，请刷新页面后重试");
       return;

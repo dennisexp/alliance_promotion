@@ -9,8 +9,8 @@ module.exports = {
     //服务器的域名
     domain: {
         port: 8801,
-        server_domain: "https://jnserver.yihemall.cn",
-        client_domain: "https://app.yihemall.cn",
+        server_domain: "http://jnserver.yihemall.cn",
+        client_domain: "http://app.yihemall.cn",
     },
     
 

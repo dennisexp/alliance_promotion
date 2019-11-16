@@ -9,17 +9,19 @@ const MongoDB = require('../config/db');
 const Util = require('../config/util');
 const userCtrl = require('../controller/user');
 
-//var client = new OAuth(Config.weixin.mp_app_id, Config.weixin.mp_app_secret);
+var client = new OAuth(Config.weixin.mp_app_id, Config.weixin.mp_app_secret);
 
 //多进程，token需要全局维护，以下为保存token的接口。
-// var client = new OAuth(Config.weixin.mp_app_id, Config.weixin.mp_app_secret, function (openid, callback) {
+// var client = new OAuth(Config.weixin.mp_app_id, Config.weixin.mp_app_secret, async (openid) => {
 //   // 传入一个根据openid获取对应的全局token的方法
-//   // 在getUser时会通过该方法来获取token
-//   Token.getToken(openid, callback);
-// }, function (openid, token, callback) {
+//   var txt = await fs.readFile('public/weixin/' + openid + ':access_token.txt', 'utf8');
+//   return JSON.parse(txt);
+// }, async (openid, token) => {
+//   // 请将token存储到全局，跨进程、跨机器级别的全局，比如写到数据库、redis等
+//   // 这样才能在cluster模式及多机情况下使用，以下为写入到文件的示例
 //   // 持久化时请注意，每个openid都对应一个唯一的token!
-//   Token.setToken(openid, token, callback);
-//   });
+//   await fs.writeFile('public/weixin/' + openid + ':access_token.txt', JSON.stringify(token));
+// });
 
 const wx_api = new WeChatAPI(Config.weixin.mp_app_id, Config.weixin.mp_app_secret);
 /**
@@ -42,7 +44,7 @@ const wx_mp_config = {
   mchid: Config.weixin.partner_id,
   partnerKey: Config.weixin.partner_key,
   //pfx: require('fs').readFileSync('证书文件路径'),
-  notify_url: Config.server_domain + '/weixin/mp_pay_notify',
+  notify_url: Config.domain.server_domain + '/weixin/mp_pay_notify'
   //spbill_create_ip: 'IP地址'
 };
 // 调试模式(传入第二个参数为true, 可在控制台输出数据)
@@ -53,7 +55,7 @@ router.get('/', async (ctx, next) => {
     title: '一合优品微信API'
   };
 
-  await ctx.render('index', { title: ctx.state });
+  //await ctx.render('index', { title: ctx.state });
 });
 
 /**
@@ -62,19 +64,22 @@ router.get('/', async (ctx, next) => {
 router.get('/authorizeURL', async (ctx, next) => {
 
   let redirect_uri = ctx.request.query.redirect_uri;
+  let parent_code = ctx.request.query.parent_code;
 
+  //console.log(ctx.request.query);
+  
   if (!redirect_uri) {
     ctx.error();
     return;
   }
 
   //产生获得code的url
-  //let url = client.getAuthorizeURL(redirect_uri, 'STATE', 'snsapi_userinfo');
+  let url = client.getAuthorizeURL(decodeURIComponent(redirect_uri), JSON.stringify({parent_code:parent_code}), 'snsapi_userinfo');
 
-  let url = "http://localhost:8100/home?code=021sIgA41MC5pT1p1Nz415SvA41sIgAg";
-  ctx.success(url);
+  //let url = "http://localhost:8100/home?code=021sIgA41MC5pT1p1Nz415SvA41sIgAg";
+  ctx.success(encodeURIComponent(url));
 
-  console.log("url", url);
+  //console.log("url", url);
 });
 
 /**
@@ -83,13 +88,17 @@ router.get('/authorizeURL', async (ctx, next) => {
 router.get('/userinfo', async (ctx, next) => {
 
   let code = ctx.request.query.code;
-  console.log("code: ",code);
+  let parent_code = ctx.request.query.parent_code;
+
+  //console.log(ctx.request.query);
+  //console.log("code: ",code);
   if (!code) {
     ctx.error(); 
     return;
   }
 
-  //let user = await client.getUserByCode(code);
+  let user = await client.getUserByCode(code);
+  /**
   let user = {
     openid: 'osGnz081kpGgyULuJQicl_SwpPr4',
     nickname: '王者杨杰',
@@ -101,12 +110,73 @@ router.get('/userinfo', async (ctx, next) => {
     headimgurl: 'http://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTIcu3Rib4t1wYDcPDj1lhOTXaaMnbmg02NEGSLkfhEAqDytzPsmm1kc0FfuwuGOicDxrt82hphyOZJQ/132',
     privilege: [] 
   };
+   */
+
+  let exist = await MongoDB.findInTable("user", { "openid": user.openid });
+  //console.log("用户是否存在", exist);
+  
+
+  let params = {
+    openid: user.openid,
+    nickname: user.nickname,
+    sex: user.sex,
+    headimgurl: user.headimgurl,
+    address: {
+      city: user.city, //普通用户个人资料填写的城市
+      province: user.province, //用户个人资料填写的省份
+      country: user.country //国家，如中国为CN
+    },
+    last_login_time: new Date()
+  }
+  //不存在，则插入（须加上salt和邀请码）
+  if (exist.length == 0) {
+    //生成邀请码，需要和数据库确认下，是否重复
+    let invitation_code = Util.uuid(8,32);
+    let same = true;
+    while (same) {
+      let ret = await MongoDB.findInTable("user", { invitation_code: invitation_code });
+      console.log("invitation_code", ret);
+      if (ret.length == 0) {
+        same = false;//没有重复的，可用
+        console.log("invitation_code OK", invitation_code);
+      } else {
+        //有重复的，再来一个
+        console.log("invitation_code 有重复，再生一个", invitation_code);
+        invitation_code = Util.uuid(8,32);
+      }
+    }
+
+    params.invitation_code = invitation_code;
+
+    //生成salt
+    params.salt = Util.generateSalt();
+
+    //检查验证码是否存在，不存在时设置为0    
+    if (!parent_code) {
+      parent_code = 0;
+    } else {
+      let ret = await MongoDB.findInTable("user", { invitation_code: parent_code });
+      if (ret.length == 0) {
+        console.log("上级的邀请码不正确", parent_code);
+        parent_code = 0;
+      } else {
+        //正确的
+      }
+    }
+
+    //插上上级编号（验证码）//是不是要查找有没有存在？TODO
+    params.parent_code = parent_code+"";
+  }
+
+  //console.log("待升级的用户信息", params);
+  
 
   let options = { upsert: true, new: true, setDefaultsOnInsert: true };
-  await MongoDB.findOneAndModify("user",{"openid":user.openid},user,options).then(res => { 
+  //存在的话，更新信息。
+  await MongoDB.findOneAndModify("user",{"openid":user.openid}, params, options).then(res => { 
     // console.log("订单状态修改后");
-    console.log(res);
-    if (res.status == 1) {
+    //console.log(res);
+    if (res.status == 1 && res.data) {
       let userinfo = res.data;
       userinfo.password = "";
       ctx.success(userinfo);
@@ -115,6 +185,9 @@ router.get('/userinfo', async (ctx, next) => {
     }
     
   });
+
+
+  
 });
 
 /**
@@ -205,6 +278,92 @@ router.post('/mp_pay', async (ctx, next) => {
 
 });
 
+//微信app支付时返回的值
+router.post('/mp_pay_notify', wx_mp_api.middleware("pay"), async (ctx, next) => {
+  try {
+    if (!ctx.request.weixin) {
+        console.log("-- 微信支付通知无内容 --");
+        return false; //没有值的情况下，不操作
+    }
+    
+    console.log("-- 通知内容 --");
+    console.log(ctx.request.weixin);
+
+    let return_code = ctx.request.weixin.return_code;
+    let result_code = ctx.request.weixin.result_code;
+    let out_trade_no = ctx.request.weixin.out_trade_no;
+    let total_amount = ((+ctx.request.weixin.total_fee) / 100).toFixed(2);
+    let transaction_id = ctx.request.weixin.transaction_id;
+
+    //先检测下该订单是否支付成功，
+    //是否是本商户创建的，成功的话，再延签，然后再更新状态
+    if (!return_code==='SUCCESS' || !result_code==='SUCCESS') {
+      console.log("==支付未成功，不需要操作==");
+      return false; //交易不成功的话，返回
+    }
+
+    let order = await MongoDB.findInTable('order', {"trade_no": out_trade_no, "status": "WAIT_BUYER_PAY" });
+    console.log(res.data);
+
+    if (order.length == 0) { //不匹配单号和金额，则返回
+      //找不到相应订单
+      console.log("找不到相应的支付订单", out_trade_no);
+      return false;
+    }
+
+    //获得充值客户的id和订单id
+    let oid = order.data[0].oid;
+    let openid = order.data[0].openid;
+    let parent_code = order.data[0].parent_code;
+
+    let parent = await userCtrl.getInfoByInvitationCode(parent_code);
+    
+    //if (parent.status == 1) let parent_info = parent.data;
+  
+    console.log("用户id:",openid);
+
+    //更改订单信息，并修改充值人员的账户信息
+
+    //更新order状态
+    let orderRet = await MongoDB.findOneAndModify("order", { "oid": oid }, {
+      "status": return_code,
+      "payment_no": transaction_id,
+      "payment_time": new Date(),
+      "amount.bonus": parent.status == 1 ? parent.data.grade.bonus : 0
+    });
+    
+    if (orderRet.status != 1 || !orderRet.data) {
+      //更新失败
+      console.log('订单账户变动记录更新结果：', return_code);
+      //.log(res.status);
+      return false;
+    }
+    
+    //状态TRADE_SUCCESS的通知触发条件是商户签约的产品支持退款功能的前提下，买家付款成功
+    //交易状态TRADE_FINISHED的通知触发条件是商户签约的产品不支持退款功能的前提下，买家付款成功；或者，商户签约的产品支持退款功能的前提下，交易已经成功并且已经超过可退款期限。
+    //修改付款用户的信息。
+
+    let userRet = await userCtrl.update(openid, { "grade": 1 });
+    if (userRet.status == 0) {
+      console.log('订单处理结束：失败');
+      console.log(userRet.message);
+      return false;
+    }
+
+    if (parent.status == 1) {
+      let p_openid = parent.data.openid;
+      let bonus = parent.data.grade.bonus;
+      let parentRet = await userCtrl.update(p_openid, { $inc: { "balance.bonus": +bonus } });
+    }
+    
+    return true;
+  } catch (e) {
+    console.log('订单处理结束：失败');
+    console.log(e);
+    return false;
+  }
+})
+
 /**
  * 获取微信JS的配置
  */
@@ -212,13 +371,13 @@ router.get('/js_config', async (ctx, next) => {
   let param = {
     debug: true,
     jsApiList: ['updateAppMessageShareData', 'updateTimelineShareData'],
-    url: 'http://app.yihemall.cn'
+    url: Config.domain.client_domain
   };
   let config = await wx_api.getJsConfig(param);
-  console.log("JS Config", config);
+
+  //.log("JS Config", config);
 
   ctx.success(config);
-  
 });
 
 
