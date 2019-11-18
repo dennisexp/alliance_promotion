@@ -30,7 +30,7 @@ let collection = {
         status: { type: Number, default: 1 },
         create_time: { type: Date, default: Date.now },
         last_login_time: Date,
-        parent_id: { type: String, default: "0" },//上级节点
+        parent_code: { type: String, default: "0" },//上级节点
         balance: {
             bonus: { type: Number, default: 0 },
             withdrawing: { type: Number, default: 0 },
@@ -80,7 +80,7 @@ let collection = {
      */
     merchant: {
         mid: { type: Number, unique: true },
-        openid: { type: String, required: true },
+        openid: { type: String },
         title: { type: String, trim: true, required: true },
         telephone: { type: String, required: true },
         display_order: { type: Number, default: 1 },   //排序顺序 12345
@@ -89,10 +89,11 @@ let collection = {
         recommend: { type: Number, default: 0 },  //特别推荐
         address: {//地址
             text: { type: String, required: true },//文本地址
-            map:{ type: String, required: true },//地图位置
+            map:{ type: String },//地图位置
         },
-        images: {
+        media: {
             thumbnail_url: String, //头像缩略图
+            video_url: String,/**短视频的地址*/
             slideshow: [ //轮播图
                 {
                     url: String
@@ -108,8 +109,7 @@ let collection = {
             {
                 cid: { type: Number, required: true },//优惠券的id
                 label: { type: String, required: true },//名称
-                number: { type: Number, default: 0 },//张数
-                type: { type: String, required: true }, //免费券1，打折券2
+                type: { type: Number, default: 2 }, //无限次使用1，单次使用2
                 display_order:{ type: String, required: true }
             }
         ],

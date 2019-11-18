@@ -23,10 +23,10 @@ var client = new OAuth(Config.weixin.mp_app_id, Config.weixin.mp_app_secret);
 //   await fs.writeFile('public/weixin/' + openid + ':access_token.txt', JSON.stringify(token));
 // });
 
-const wx_api = new WeChatAPI(Config.weixin.mp_app_id, Config.weixin.mp_app_secret);
+//const wx_api = new WeChatAPI(Config.weixin.mp_app_id, Config.weixin.mp_app_secret);
 /**
  * 多线程接口配置
-
+ */
 const wx_api = new WeChatAPI(Config.weixin.mp_app_id, Config.weixin.mp_app_secret, async () => {
   // 传入一个获取全局 token 的方法
   var txt = fs.readFileSync('public/weixin/access_token.txt', 'utf8');
@@ -36,7 +36,7 @@ const wx_api = new WeChatAPI(Config.weixin.mp_app_id, Config.weixin.mp_app_secre
   // 这样才能在cluster模式及多机情况下使用，以下为写入到文件的示例
   fs.writeFileSync('public/weixin/access_token.txt', JSON.stringify(token));
 });
- */
+
 
 //微信公众号支付时的配置
 const wx_mp_config = {
@@ -48,12 +48,14 @@ const wx_mp_config = {
   //spbill_create_ip: 'IP地址'
 };
 // 调试模式(传入第二个参数为true, 可在控制台输出数据)
-const wx_mp_api = new tenpay(wx_mp_config, false);
+const wx_mp_api = new tenpay(wx_mp_config, true);
 
 router.get('/', async (ctx, next) => {
   ctx.state = {
     title: '一合优品微信API'
   };
+
+  ctx.success("一合优品微信API");
 
   //await ctx.render('index', { title: ctx.state });
 });
@@ -220,11 +222,19 @@ router.post('/mp_pay', async (ctx, next) => {
   if (verification.status == 1) {
     //将姓名和手机号添加到数据库中
     let userinfo = verification.data;
+    if (userinfo.grade >= 1) {
+      //已经是付费用户了，无需再购买，每人限购一次
+      //console.log("update",ret.message);
+      ctx.error("免单大礼包已激活，无需再次购买");
+      return;
+    }
     let ret = await userCtrl.update(openid, { name: name, mobilephone: mobilephone });
     if (ret.status == 1) {
       console.log("update",ret.message);
     } else {
-      console.log("update error",ret.message);
+      console.log("update error", ret.message);
+      //ctx.error("无法产生微信预付订单，请刷新页面后重试或联系客服");
+      //return;
     }
 
     let outTradeNo = Util.getTradeNo("wx");
@@ -250,7 +260,7 @@ router.post('/mp_pay', async (ctx, next) => {
       "oid": oid,
       "openid": openid, //付款用户编号
       "nickname": userinfo.nickname, //微信名称
-      "parent_id": userinfo.parent_id, //上级ID
+      "parent_code": userinfo.parent_code, //上级ID
       "subject": "购买免单大礼包",
       "trade_no": outTradeNo, //微信等交易流水编号。
       "payment_no":"",//微信返回来的付款账单号
@@ -280,10 +290,13 @@ router.post('/mp_pay', async (ctx, next) => {
 
 //微信app支付时返回的值
 router.post('/mp_pay_notify', wx_mp_api.middleware("pay"), async (ctx, next) => {
+
+  ctx.reply("FAIL");//设置一个默认值
+  
   try {
     if (!ctx.request.weixin) {
         console.log("-- 微信支付通知无内容 --");
-        return false; //没有值的情况下，不操作
+        return; //没有值的情况下，不操作
     }
     
     console.log("-- 通知内容 --");
@@ -299,16 +312,16 @@ router.post('/mp_pay_notify', wx_mp_api.middleware("pay"), async (ctx, next) => 
     //是否是本商户创建的，成功的话，再延签，然后再更新状态
     if (!return_code==='SUCCESS' || !result_code==='SUCCESS') {
       console.log("==支付未成功，不需要操作==");
-      return false; //交易不成功的话，返回
+      return; //交易不成功的话，返回
     }
 
     let order = await MongoDB.findInTable('order', {"trade_no": out_trade_no, "status": "WAIT_BUYER_PAY" });
-    console.log(res.data);
+    console.log(order);
 
     if (order.length == 0) { //不匹配单号和金额，则返回
       //找不到相应订单
       console.log("找不到相应的支付订单", out_trade_no);
-      return false;
+      return;
     }
 
     //获得充值客户的id和订单id
@@ -318,9 +331,8 @@ router.post('/mp_pay_notify', wx_mp_api.middleware("pay"), async (ctx, next) => 
 
     let parent = await userCtrl.getInfoByInvitationCode(parent_code);
     
-    //if (parent.status == 1) let parent_info = parent.data;
-  
-    console.log("用户id:",openid);
+    console.log("用户id:", openid);
+    console.log("parent:", parent);
 
     //更改订单信息，并修改充值人员的账户信息
 
@@ -336,7 +348,7 @@ router.post('/mp_pay_notify', wx_mp_api.middleware("pay"), async (ctx, next) => 
       //更新失败
       console.log('订单账户变动记录更新结果：', return_code);
       //.log(res.status);
-      return false;
+      return;
     }
     
     //状态TRADE_SUCCESS的通知触发条件是商户签约的产品支持退款功能的前提下，买家付款成功
@@ -344,23 +356,27 @@ router.post('/mp_pay_notify', wx_mp_api.middleware("pay"), async (ctx, next) => 
     //修改付款用户的信息。
 
     let userRet = await userCtrl.update(openid, { "grade": 1 });
+    
     if (userRet.status == 0) {
       console.log('订单处理结束：失败');
       console.log(userRet.message);
-      return false;
+      return;
     }
+
+    console.log(userRet.data.nickname, "订单状态处理");
 
     if (parent.status == 1) {
       let p_openid = parent.data.openid;
       let bonus = parent.data.grade.bonus;
       let parentRet = await userCtrl.update(p_openid, { $inc: { "balance.bonus": +bonus } });
+      console.log("奖金状态处理",parentRet);
     }
     
-    return true;
+    ctx.reply("");//成功
   } catch (e) {
     console.log('订单处理结束：失败');
     console.log(e);
-    return false;
+    return;
   }
 })
 
@@ -376,8 +392,11 @@ router.get('/js_config', async (ctx, next) => {
   let config = await wx_api.getJsConfig(param);
 
   //.log("JS Config", config);
-
-  ctx.success(config);
+  if (config) 
+    ctx.success(config);
+  else 
+    ctx.error("无法获取微信公众号配置");
+  
 });
 
 

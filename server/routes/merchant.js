@@ -1,21 +1,21 @@
 const router = require('koa-router')();
-const Util = require("../config/util")
+const MongoDB = require('../config/db');
 
   router.get('/', async (ctx, next) => {
     ctx.body = 'this a merchants response!';
   });
 
-  router.get('/ttt', async (ctx, next) => {
-    //ctx.body = 'this a userssss response!';
-    let code = Util.uuid(6,33);
-    ctx.body = code;
-    console.log("code: ", code);
-
-    let data = '123456789ABCDEFGHJKLMNPQRSTUVWXY'.split('');
-
-    //console.log("data: ", Util.shuffle(data));
+router.get('/all', async (ctx, next) => {
     
-  });
+  let ret = await MongoDB.findInTable("merchant", { status: 1 });
+  
+  console.log("可用商家的数量", ret.length);
+
+  if (ret.length == 0)
+    ctx.error("无可用商家");
+  else ctx.success(ret.data)
+    
+});
 
 module.exports=router.routes();
 

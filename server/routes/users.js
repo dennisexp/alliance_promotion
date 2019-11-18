@@ -6,6 +6,13 @@ const userCtrl = require('../controller/user');
 
 router.get('/', async (ctx, next) => {
   //ctx.body = 'this a users response! ' + Util.uuid(6, 32);
+
+  let ret = userCtrl.getInfoByInvitationCode("AJLXKD72");
+
+  console.log("用户信息", ret);
+
+  ctx.success(ret);
+
   
 
   //生成邀请码，需要和数据库确认下，是否重复
@@ -83,7 +90,7 @@ router.post('/info', async (ctx, next) => {
     await MongoDB.findOneAndModify("user", { "openid": openid }, newData).then(async res => {
       if (res.status == 1 && res.data) {
         let userinfo = res.data;
-        userinfo.salt = "";
+        //userinfo.salt = "";
         userinfo.password = "";
         ctx.success(userinfo);
       } else {
@@ -129,7 +136,7 @@ router.post('/alipay_info', async (ctx, next) => {
     }).then(async res => {
       if (res.status == 1 && res.data) {
         let userinfo = res.data;
-        userinfo.salt = "";
+        //userinfo.salt = "";
         userinfo.password = "";
         ctx.success(userinfo);
       } else {

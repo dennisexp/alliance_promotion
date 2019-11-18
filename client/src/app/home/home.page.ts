@@ -10,6 +10,7 @@ import { BaseUI } from '../component/baseui';
 
 import * as moment from 'moment';
 declare var window: any;
+
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
@@ -18,8 +19,10 @@ declare var window: any;
 export class HomePage extends BaseUI {
 
   public userinfo: any = {
-    openid: "osGnz081kpGgyULuJQicl_SwpPr4",
+    //openid: "osGnz081kpGgyULuJQicl_SwpPr4",
   };
+
+  public merchantList: [{}];
 
   /**
    * 倒计时剩余天数
@@ -71,11 +74,10 @@ export class HomePage extends BaseUI {
   ngOnInit() {
     let code: any;
     let parent_code: any;
+    let openid: any;
     
     this.activatedRoute.queryParams.subscribe((data: any) => {
-      console.log("data: ", data);
-      // let d = moment(new Date()).format();
-      // console.log("date", d);
+      console.log("local data: ", data);
       if (data && data.code) {
         code = data.code;
       }
@@ -89,23 +91,24 @@ export class HomePage extends BaseUI {
       }
 
       if (data && data.openid) {
-        this.userinfo.openid = data.openid;
+        openid = data.openid;
       }
 
     });
 
     //code = "021sIgA41MC5pT1p1Nz415SvA41sIgAg";
     //return;
+    this.userinfo = this.storage.get("userinfo_" + openid);
 
-    let openid = this.userinfo.openid;
-    if (!openid || openid.trim() == "") {
-      //正常的用户没有salt，是不是应该刷新一下？
+    if (openid && openid.trim()!="" && this.userinfo && this.userinfo.openid) {
+      //正常的用户
 
     } else if (!code || code.trim() == "") {
       //公众号验证，获得code，进而获得openid
       //如果code为空，则获取code
-      let api = "weixin/authorizeURL?redirect_uri="+encodeURIComponent(this.common.config.app_domain + "home")+"&parent_code="+parent_code;
-      this.common.ajaxGet(api).then((response:any)=>{
+      let api = "weixin/authorizeURL?redirect_uri=" + encodeURIComponent(this.common.config.app_domain + "home");//+"&parent_code="+parent_code;
+      api = parent_code ? (api + "&parent_code=" + parent_code) : api;
+      this.common.ajaxGet(api).then((response: any) => {
         //console.log("response",response);
         if (response && response.status.code==1) {
           window.location=decodeURIComponent(response.data)+"";
@@ -116,14 +119,14 @@ export class HomePage extends BaseUI {
       })
       //如果code已经获取，那么获取openid以及用户的信息等
     } else {
-      let api = "weixin/userinfo?code=" + code+"&parent_code="+parent_code;
+      let api = "weixin/userinfo?code=" + code;// + "&parent_code=" + parent_code;
+      api = parent_code ? (api + "&parent_code=" + parent_code) : api;
       this.common.ajaxGet(api).then((response:any)=>{
         //console.log("response: ",response);
         if (response && response.status.code == 1) {
           this.userinfo = response.data;//获得用户信息
-          this.storage.set("salt_" + this.userinfo.openid, this.userinfo.salt);
-          this.userinfo.salt = "";//删除敏感数据
-          //console.log("userinfo",this.userinfo);
+          this.storage.set("userinfo_" + this.userinfo.openid, this.userinfo);
+          console.log("userinfo", this.userinfo);
         } else {
           super.presentFailureToast(this.toastController, "无法获得微信用户的信息，请重试");
         }
@@ -132,8 +135,17 @@ export class HomePage extends BaseUI {
     
   }
 
-  ionViewDidEnter() {
+  async ionViewDidEnter() {
     this.processTime();
+    //获得商家信息
+    let merchants = await this.common.ajaxGet("merchant/all");
+    if (merchants && merchants['status'].code == 1) {
+      this.merchantList = merchants['data'];
+    }
+
+    console.log("merchantList");
+    console.log(this.merchantList);
+    
   }
 
   processTime() {
@@ -194,34 +206,108 @@ export class HomePage extends BaseUI {
   }
 
   /**
-   * 头上
+   * 投诉，OK
    */
   complain() {
-    this.navController.navigateForward('/complain?openid='+this.userinfo.openid);
+    this.navController.navigateForward('/complain', {
+      queryParams: {
+        openid: this.userinfo.openid
+      }
+    })
   }
-
+  /**
+   * 提现 OK
+   */
   withdraw() {
-    this.navController.navigateForward('/withdraw?openid='+this.userinfo.openid);
+    this.navController.navigateForward('/withdraw', {
+      queryParams: {
+        openid: this.userinfo.openid
+      }
+    })
   }
 
   share() {
-    this.navController.navigateForward('/share?openid='+this.userinfo.openid);
+    this.navController.navigateForward('/share', {
+      queryParams: {
+        openid: this.userinfo.openid
+      }
+    })
+
+    //this.navController.navigateForward('/share?openid='+this.userinfo.openid+'&invitation='+this.userinfo.invitation_code);
+//     console.log("url", encodeURIComponent(window.location.href.split('#')[0]));
+//     let response = await this.common.ajaxGet("weixin/js_config?url="+encodeURIComponent(window.location.href.split('#')[0]));
+//     //let response = await this.common.ajaxGet("weixin/js_config?url="+window.location.href);
+    
+//     if (!response || response['status'].code == 0) {
+//       //没有获取到配置，报错
+//       super.presentFailureToast(this.toastController, response['status'].message);
+//       return;
+//     } 
+
+//     let config = response['data'];
+
+//     console.log("config",config);
+//     window.wx.config({
+//       debug: config.debug, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+//       appId: config.appId, // 必填，公众号的唯一标识
+//       timestamp: config.timestamp, // 必填，生成签名的时间戳
+//       nonceStr: config.nonceStr, // 必填，生成签名的随机串
+//       signature: config.signature,// 必填，签名
+//       jsApiList: config.jsApiList // 必填，需要使用的JS接口列表
+//     });//通过config接口注入权限验证配置
+// console.log("window.wx",window.wx);
+
+//     window.wx.ready(function () {
+//       // config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
+
+      
+//       window.wx.updateAppMessageShareData({
+//         title: '标题', // 分享标题
+//         desc: '描述', // 分享描述
+//         link: 'http://app.yihemall.cn/home', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+//         imgUrl: 'assets/img/contact.jpg', // 分享图标
+//         success: function () {
+//           // 设置成功
+
+// console.log("0000000");
+
+
+
+//         }
+//       });
+
+//       window.wx.error(function (res) {
+//         // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
+//         alert("error")
+//       });
+
+//     });
   }
 
   sales() {
-    this.navController.navigateForward('/sales-table?openid='+this.userinfo.openid);
+    this.navController.navigateForward('/sales-table', {
+      queryParams: {
+        openid: this.userinfo.openid
+      }
+    })
   }
 
   coupon() {
-    this.navController.navigateForward('/coupon-list?openid='+this.userinfo.openid);
+    this.navController.navigateForward('/coupon-list', {
+      queryParams: {
+        openid: this.userinfo.openid
+      }
+    })
   }
-
+  /**
+   * 申请加入联盟商家，OK
+   */
   application() {
-    this.navController.navigateForward('/application?openid='+this.userinfo.openid);
-  }
-
-  buy() {
-    
+    this.navController.navigateForward('/application', {
+      queryParams: {
+        openid: this.userinfo.openid
+      }
+    })
   }
 
   public isPlay = true;
@@ -314,7 +400,7 @@ export class HomePage extends BaseUI {
    * 微信支付购买
    */
   async presentAlertBuy() {
-    let salt = this.storage.get("salt_" + this.userinfo.openid);
+    let salt = this.userinfo.salt;
     //let salt = "5203344";
     if (!salt) {
       super.presentFailureToast(this.toastController, "账号未经授权，请刷新页面后重试");
@@ -410,7 +496,7 @@ export class HomePage extends BaseUI {
                 }
           
               } else {
-                super.presentFailureToast(this.toastController, "支付失败");
+                super.presentFailureToast(this.toastController, response.status.message);
               }
             }).catch(error => {
               console.log("1");
@@ -432,7 +518,7 @@ export class HomePage extends BaseUI {
    */
   async presentAlertActivate() {
 
-    let salt = this.storage.get("salt_" + this.userinfo.openid);
+    let salt = this.userinfo.salt;
     //let salt = "5203344";
     if (!salt) {
       super.presentFailureToast(this.toastController, "账号未经授权，请刷新页面后重试");
@@ -525,7 +611,7 @@ export class HomePage extends BaseUI {
 
             //console.log("sign", sign);
                                     
-            //充服务器端调取并拼装订单信息//公众号支付
+            //
             this.common.ajaxPost("user/activation", post).then(async (response: any) => {
               if (response && response['status'].code == 1) {
                 this.userinfo = response['data'];
@@ -534,9 +620,6 @@ export class HomePage extends BaseUI {
 
                 super.presentToast(this.toastController, response['status'].message);
 
-
-                
-          
               } else {
                 super.presentFailureToast(this.toastController, response['status'].message);
                 this.presentAlertActivate();
@@ -544,9 +627,6 @@ export class HomePage extends BaseUI {
               }
 
             });
-            
-            
-    
           }
         }
       ]
@@ -586,7 +666,7 @@ export class HomePage extends BaseUI {
    * 延时3秒刷新用户信息
    */
   async refreshUser(interval) {
-    let salt = this.storage.get("salt_" + this.userinfo.openid);
+    let salt = this.userinfo.salt;
     //let salt = "5203344";
     if (!this.userinfo.openid || this.userinfo.openid.trim() == "" || !salt || salt.trim() == "") {
       super.presentFailureToast(this.toastController, "账号未经授权，请刷新页面后重试");
@@ -616,7 +696,7 @@ export class HomePage extends BaseUI {
       return;
     }
 
-    let salt = this.storage.get("salt_" + this.userinfo.openid);
+    let salt = this.userinfo.salt;
     //let salt = "5203344";
     if (!this.userinfo.openid || this.userinfo.openid.trim() == "" || !salt || salt.trim() == "") {
       super.presentFailureToast(this.toastController, "账号未经授权，请刷新页面后重试");

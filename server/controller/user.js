@@ -40,7 +40,7 @@ module.exports = {
         //签名验证通过，返回用户信息
         if (verification === sign) {
             let userinfo = res.data[0];
-            userinfo.salt = "";//去掉这个
+            //userinfo.salt = "";//去掉这个
             userinfo.password = "";
             return { "status": 1, "message": "签名正确", "data": userinfo };
         } else {
@@ -63,7 +63,7 @@ module.exports = {
         //console.log("-----update-----",res);
         if (res.status == 1 && res.data) {
             let userinfo = res.data;
-            userinfo.salt = "";//去掉这个
+            //userinfo.salt = "";//去掉这个
             userinfo.password = "";
             return { "status": 1, "message": "SUCCESS", "data": userinfo };
         } else {
@@ -86,7 +86,7 @@ module.exports = {
         },
         {
             $lookup: {
-                from: "grade",
+                from: "grades",
                 localField: "grade",
                 foreignField: "gid",
                 as: "grade"
@@ -100,10 +100,11 @@ module.exports = {
                 grade: 1
             }
         },
+        { $unwind: "$grade" }, 
         { $limit: 1 }];
         
         let res = await MongoDB.aggregate("user", condition);
-            console.log("by code ", res);
+            //console.log("userinfo by code ", res);
         if (res.length > 0) {
             return { "status": 1, "message": "SUCCESS", "data": res.data[0] };
         } else {

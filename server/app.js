@@ -17,9 +17,11 @@ const path = require('path')
 const response = require('./services/response');
 
 const config = require('./config/config')
+
 const index = require('./routes/index')
 const user = require('./routes/users')
 const weixin = require('./routes/weixin')
+const merchant = require('./routes/merchant')
 
 //const port = process.env.PORT || config.domain.port
 
@@ -28,11 +30,17 @@ onerror(app);
 
 
 router.use('/user', user);
-router.use('/weixin',weixin);
+router.use('/weixin', weixin);
+router.use('/merchant', merchant);
 router.use(index);
 
 // middlewares
-app.use(bodyparser())
+app.use(convert(bodyparser({
+  enableTypes: ['json', 'form', 'text'],
+  extendTypes: {
+    text: ['text/xml', 'application/xml']
+  }
+})))
   //.use(json())
   .use(jsonp())
   .use(cors())   //配置后台允许跨域
