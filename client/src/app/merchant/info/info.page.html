@@ -5,9 +5,69 @@
         <ion-icon slot="icon-only" name="arrow-back" color="dark"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title color="yihe">商家信息</ion-title>
+    <ion-title color="yihe">{{merchant.title}}</ion-title>
   </ion-toolbar>
 </ion-header>
-<ion-content>
+<ion-content color="yihe">
+	<div calss="p_content">
+		<div class="img_area mb05">
+		  <video class="p_img" width="100%" autoplay="autoplay" controls="controls" *ngIf="merchant && merchant.media && merchant.media.video_url" playsinline="" webkit-playsinline="">
+			<source [src]="common.config.img_domain+merchant.media.video_url" type="video/mp4" />
+			Your browser does not support the video tag.
+		  </video>
 
+		  <ion-slides *ngIf="merchant && merchant.media && !merchant.media.video_url" pager="true" #slide1 [options]="slidesOpts" (ionSlideTouchEnd)="slideTouchEnd()">
+		    <ion-slide class="p_img" *ngFor="let item of merchant.media.slideshow">
+		        <img [src]="common.config.img_domain+item['url']" />
+		    </ion-slide>
+		  </ion-slides>
+		</div>
+
+		<div class="contentBox">
+			<ion-list class="merchant">
+				<ion-list-header class="merchant_box">
+					<div class="merchant_info_left">
+					  <img *ngIf="merchant.media" [src]="common.config.img_domain+merchant.media.thumbnail_url" class="merchant_img">
+					  <div class="merchant_info">
+					    <p class="merchant_title">{{merchant.title}}</p>
+					    <div class="merchant_contact">
+					      <img src="assets/img/call3.png" class="iconBox">
+					      <p class="contact_text">{{merchant.telephone}}</p>
+					    </div>
+					    <div class="merchant_contact">
+					      <img src="assets/img/address3.png" class="iconBox">
+					      <p class="contact_text" *ngIf="merchant.address">{{merchant.address.text}}</p>
+					    </div>
+					  </div>
+					</div>
+					<div class="getCoupon" *ngIf="userinfo.grade==0">点击<br/>领取</div>
+					<div class="getCoupon" *ngIf="userinfo.grade>0">马上<br/>使用</div>
+				</ion-list-header>
+				<!--优惠券信息-->
+				<div *ngFor="let coupon of merchant.coupons, let j = index">
+					<ion-item lines="full" [style]="j==(merchant.coupons.length-1) ? border:''">
+					  <div class="couponInfo">
+					    <div class="couponContent">
+					      <p class="free">赠</p>
+					      <p class="couponText">{{coupon.label}}</p>
+					    </div>
+					  </div>
+					</ion-item>
+				</div>
+			</ion-list>
+
+			<div class="merchant">
+				<div class="details">
+					<div id="regulation" class="regulation">
+
+					</div>
+					<div *ngIf="merchant.media">
+						<div *ngFor="let imgUrl of merchant.media.detail">
+							<img [src]="common.config.img_domain+imgUrl.url">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </ion-content>

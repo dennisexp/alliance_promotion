@@ -330,7 +330,6 @@
 .merchants {
     width: 100%;
     background:#ff6600;
-    border-radius: 0.5rem;
     margin: 0;
     padding: 0;
 }
@@ -338,10 +337,6 @@
     width: 100%;
     padding: 1.5rem;
     margin-top: 1.5rem;
-    border-radius: 0.5rem 0.5rem 0 0;
-    //border-top-right-radius: 0.5rem;
-    // border-bottom-left-radius: 0.5rem;
-    // border-bottom-right-radius: 0.5rem;
 }
 
 .merchant_info_left {
@@ -439,10 +434,11 @@
 }
 
 .couponText {
-    width: 90%;
+    width: 70%;
     font-size: 1.4rem;
     font-family: PingFang-SC-Medium;
     font-weight: 500;
+    flex-wrap: wrap;
     color: rgba(53, 53, 53, 1);
     line-height: 2rem;
 }

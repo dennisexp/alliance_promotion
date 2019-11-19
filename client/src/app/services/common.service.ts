@@ -12,9 +12,9 @@ export class CommonService {
   public config: any = {
     
     app_domain:"http://app.yihemall.cn/",
-    //server_domain: "http://jnserver.yihemall.cn/",
+    server_domain: "http://jnserver.yihemall.cn/",
     //server_domain: 'http://localhost:8801/',
-    server_domain: 'http://192.168.2.138:8801/',
+    //server_domain: 'http://192.168.2.138:8801/',
     img_domain: "http://products.yihemall.cn/",
 
     //weixin_mp_app_id: "wxde4393c66d04cfd0",

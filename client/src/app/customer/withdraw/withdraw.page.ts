@@ -17,6 +17,7 @@ export class WithdrawPage extends BaseUI implements OnInit {
   public withdrawMoney;
   public userinfo: any = {
     openid: "",
+    salt: "",
     balance: {
       bonus: 0,
       withdrawing: 0,
@@ -46,11 +47,12 @@ export class WithdrawPage extends BaseUI implements OnInit {
     	this.userinfo.openid=data.openid;
     });
 
-    let salt = this.storage.get("salt_" + this.userinfo.openid);
-    //let salt = "5203344";
-    let result = await this.userDao.getUserInfo(this.userinfo.openid, salt);
+    this.userinfo = this.storage.get("userinfo_" + this.userinfo.openid);
+
+    let result = await this.userDao.getUserInfo(this.userinfo.openid, this.userinfo.salt);
     if (result.status == 1) {
       this.userinfo = result.data;
+      this.storage.set("userinfo_" + this.userinfo.openid, this.userinfo);
     } else {
       super.presentFailureToast(this.toastController, result.message);
     }
@@ -108,6 +110,7 @@ export class WithdrawPage extends BaseUI implements OnInit {
             if (res.status == 1) {
               super.presentToast(this.toastController, res.message);
               this.userinfo = res.data;
+              this.storage.set("userinfo_" + this.userinfo.openid, this.userinfo);
             } else {
               super.presentFailureToast(this.toastController, res.message);
               return false;
@@ -141,7 +144,7 @@ export class WithdrawPage extends BaseUI implements OnInit {
       return;
     }
 
-    let salt = this.storage.get("salt_" + this.userinfo.openid);
+    let salt = this.userinfo.salt;
     //let salt = "5203344";
     if (!this.userinfo.openid || this.userinfo.openid.trim() == "" || !salt || salt.trim() == "") {
       super.presentFailureToast(this.toastController, "账号未经授权，请返回主页面后重试");
@@ -165,6 +168,7 @@ export class WithdrawPage extends BaseUI implements OnInit {
       if (response && response.status.code == 1) {
         super.presentToast(this.toastController, "已申请提现，24小时内到账");
         this.userinfo = response.data;
+        this.storage.set("userinfo_" + this.userinfo.openid, this.userinfo);
         this.withdrawMoney='';
       } else {
         super.presentFailureToast(this.toastController, response.status.message);
@@ -185,8 +189,7 @@ export class WithdrawPage extends BaseUI implements OnInit {
       return {status: 0, message:"请输入账户信息"};
     }
 
-    let salt = this.storage.get("salt_" + this.userinfo.openid);
-    //let salt = "5203344";
+    let salt = this.userinfo.salt;
     if (!this.userinfo.openid || this.userinfo.openid.trim()=="" || !salt || salt.trim() == "") {
       return {status: 0, message:"账号未经授权，请返回主页面后重试"};
     }

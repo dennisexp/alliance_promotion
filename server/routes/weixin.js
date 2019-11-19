@@ -99,7 +99,14 @@ router.get('/userinfo', async (ctx, next) => {
     return;
   }
 
-  let user = await client.getUserByCode(code);
+  try {
+    var user = await client.getUserByCode(code);
+  } catch (e) {
+    ctx.error("无法获取微信用户信息");
+    console.log("无法获取微信用户信息", e);
+    return;
+  }
+  //let user = await client.getUserByCode(code);
   /**
   let user = {
     openid: 'osGnz081kpGgyULuJQicl_SwpPr4',

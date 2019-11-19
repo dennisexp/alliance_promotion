@@ -15,11 +15,10 @@ import { CommonService } from './services/common.service';
 import { StorageService } from './services/storage.service';
 import { UserDaoService } from './services/user.dao.services';
 
-import { CustomerServiceComponent } from './component/customer-service/customer-service.component';
 
 @NgModule({
-  declarations: [AppComponent,CustomerServiceComponent],
-  entryComponents: [CustomerServiceComponent],
+  declarations: [AppComponent],
+  entryComponents: [],
   imports: [BrowserModule, IonicModule.forRoot({
     mode:'ios',  //配置android ios用统一的样式
     backButtonText:''  //修改默认返回文字

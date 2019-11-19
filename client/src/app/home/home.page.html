@@ -284,181 +284,47 @@
           <ion-list class="merchants">
             <!--列出每个店铺-->
             <!--店铺的地址等信息-->
-            <ion-list-header class="merchant_box" style='background: url("/assets/img/merchant0.png") 0% 0% / 100% 100%;'>
-              <div class="merchant_info_left">
-                <img src="http://giftadmin.chengzi001.cn/image/20190808/1565251638988221.jpg" class="merchant_img">
-                <div class="merchant_info">
-                  <p class="merchant_title">A08造型</p>
-                  <div class="merchant_contact">
-                    <img src="assets/img/call3.png" class="iconBox">
-                    <p class="contact_text">0739-2988611</p>
-                  </div>
-                  <div class="merchant_contact">
-                    <img src="assets/img/address3.png" class="iconBox">
-                    <p class="contact_text">新步步高斜对面新步步高斜对面新步步高斜对面新步步高斜对面新步步高斜对面 </p>
-                  </div>
-                </div>
-              </div>
-              <div class="getCoupon">点击<br/>领取</div>
-            </ion-list-header>
-            <!--优惠券信息-->
-            <ion-item lines="full">
-              <div class="couponInfo">
-                      <div class="couponContent">
-                        <p class="free">赠</p>
-                        <p class="couponText">原价90元总监洗剪吹造型第一次</p>
-                      </div>
-                      <p class="tip">使用规则：点击本店头像查看免单详情！</p>
-              </div>
-
-              <div class="arrowBox">
-              <img src="assets/img/arrowup.png" class="arrowUpAndDown" style="display: none;">
-              <img src="assets/img/arrowdown.png" class="arrowUpAndDown">
-            </div>
-            <div class="couponNumber">
-              共5张
-            </div>
-
-
-            </ion-item>
-            <ion-item lines="none" style="border-radius: 0 0 0.5rem 0.5rem;">
-              <div class="couponInfo">
-                      <div class="couponContent">
-                        <p class="free">赠</p>
-                        <p class="couponText">原价90元总监洗剪吹造型第一次</p>
-                      </div>
-                      <p class="tip">使用规则：点击本店头像查看免单详情！</p>
-              </div>
-            </ion-item>
-            <ion-item lines="full" style="display: none">
-              Items11
-            </ion-item>
-            <ion-item lines="full" style="display: none">
-              Items12
-            </ion-item>
-            <ion-item lines="none" style="display: none; border-radius: 0 0 0.5rem 0.5rem;">
-              Items3
-            </ion-item>
-
-            
-
-            <!--店铺的地址等信息-->
-            <ion-list-header class="merchant_box" style='background: url("/assets/img/merchant1.png") 0% 0% / 100% 100%;'>
-              <div class="merchant_info_left">
-                <img src="http://giftadmin.chengzi001.cn/image/20190808/1565251638988221.jpg" class="merchant_img">
-                <div class="merchant_info">
-                  <p class="merchant_title">A08造型</p>
-                  <div class="merchant_contact">
-                    <i class="iconBox"><img src="assets/img/call3.png" class="couponShopPhoneIcon"></i>
-                    <p class="contact_text">0739-2988611</p>
-                  </div>
-                  <div class="merchant_contact">
-                    <i class="iconBox"><img src="assets/img/address3.png" class="couponShopAddressIcon"></i>
-                    <p class="contact_text">新步步高斜对面新步步高斜对面新步步高斜对面新步步高斜对面新步步高斜对面 </p>
+            <div *ngFor="let merchant of merchantList, let i = index">
+              <ion-list-header class="merchant_box" [style.background]='bgCss[i%3]'>
+                <div class="merchant_info_left" (click)="goTo(merchant.mid)">
+                  <img [src]="common.config.img_domain+merchant.media.thumbnail_url" (click)="goTo(merchant.mid)" class="merchant_img">
+                  <div class="merchant_info">
+                    <p class="merchant_title">{{merchant.title}}</p>
+                    <div class="merchant_contact">
+                      <img src="assets/img/call3.png" class="iconBox">
+                      <p class="contact_text">{{merchant.telephone.split(" ")[0]}}</p>
+                    </div>
+                    <div class="merchant_contact">
+                      <img src="assets/img/address3.png" class="iconBox">
+                      <p class="contact_text">{{merchant.address.text}}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div class="getCoupon">点击<br/>领取</div>
-            </ion-list-header>
-            <!--优惠券信息-->
-            <ion-item lines="full">
-              <div class="couponInfo">
-                      <div class="couponContent">
-                        <p class="free">赠</p>
-                        <p class="couponText">原价90元总监洗剪吹造型第一次</p>
-                      </div>
-                      <p class="tip">使用规则：点击本店头像查看免单详情！</p>
-              </div>
-
-              <div class="arrowBox" >
-              <img src="assets/img/arrowup.png" class="arrowUpAndDown" style="display: none;">
-              <img src="assets/img/arrowdown.png" class="arrowUpAndDown">
-            </div>
-            <div class="couponNumber">
-              共5张
-            </div>
-
-
-            </ion-item>
-            <ion-item lines="none" style="border-radius: 0 0 0.5rem 0.5rem;">
-              <div class="couponInfo">
-                      <div class="couponContent">
-                        <p class="free">赠</p>
-                        <p class="couponText">原价90元总监洗剪吹造型第一次</p>
-                      </div>
-                      <p class="tip">使用规则：点击本店头像查看免单详情！</p>
-              </div>
-            </ion-item>
-            <ion-item lines="full" style="display: none">
-              Items11
-            </ion-item>
-            <ion-item lines="full" style="display: none">
-              Items12
-            </ion-item>
-            <ion-item lines="none" style="display: none; border-radius: 0 0 0.5rem 0.5rem;">
-              Items3
-            </ion-item>
-
-            <!--店铺的地址等信息-->
-            <ion-list-header class="merchant_box" style='background: url("/assets/img/merchant2.png") 0% 0% / 100% 100%;'>
-              <div class="merchant_info_left">
-                <img src="http://giftadmin.chengzi001.cn/image/20190808/1565251638988221.jpg" class="merchant_img">
-                <div class="merchant_info">
-                  <p class="merchant_title">A08造型</p>
-                  <div class="merchant_contact">
-                    <i class="iconBox"><img src="assets/img/call3.png" class="couponShopPhoneIcon"></i>
-                    <p class="contact_text">0739-2988611</p>
+                <div class="getCoupon" *ngIf="userinfo.grade==0">点击<br/>领取</div>
+                <div class="getCoupon" *ngIf="userinfo.grade>0">马上<br/>使用</div>
+              </ion-list-header>
+              <!--优惠券信息-->
+              <div *ngFor="let coupon of merchant.coupons, let j = index">
+                <ion-item lines="full" id="m_{{merchant.mid}}_c_{{j}}" [style]="j>=2 ? none:'' || j==1 ? border:'' || j==(merchant.coupons.length-1) ? border:''" (click)="expand_fold(merchant.mid,merchant.coupons.length)">
+                  <div class="couponInfo">
+                    <div class="couponContent">
+                      <p class="free">赠</p>
+                      <p class="couponText">{{coupon.label}}</p>
+                    </div>
+                    <p class="tip">使用规则：点击本店头像查看免单详情！</p>
                   </div>
-                  <div class="merchant_contact">
-                    <i class="iconBox"><img src="assets/img/address3.png" class="couponShopAddressIcon"></i>
-                    <p class="contact_text">新步步高斜对面新步步高斜对面新步步高斜对面新步步高斜对面新步步高斜对面 </p>
+                  <div class="arrowBox" *ngIf="j==0 && merchant.coupons.length>2" >
+                    <img src="assets/img/arrowup.png" id="m_{{merchant.mid}}_up" class="arrowUpAndDown" style="display: none;">
+                    <img src="assets/img/arrowdown.png" id="m_{{merchant.mid}}_down" class="arrowUpAndDown">
                   </div>
-                </div>
+                  <div class="couponNumber" *ngIf="j==0">
+                    共{{merchant.coupons.length}}张
+                  </div>
+                </ion-item>
               </div>
-              <div class="getCoupon">点击<br/>领取</div>
-            </ion-list-header>
-            <!--优惠券信息-->
-            <ion-item lines="full">
-              <div class="couponInfo">
-                      <div class="couponContent">
-                        <p class="free">赠</p>
-                        <p class="couponText">原价90元总监洗剪吹造型第一次</p>
-                      </div>
-                      <p class="tip">使用规则：点击本店头像查看免单详情！</p>
-              </div>
-
-              <div class="arrowBox">
-              <img src="assets/img/arrowup.png" class="arrowUpAndDown" style="display: none;">
-              <img src="assets/img/arrowdown.png" class="arrowUpAndDown">
             </div>
-            <div class="couponNumber">
-              共5张
-            </div>
-            </ion-item>
-            <ion-item lines="none" style="border-radius: 0 0 0.5rem 0.5rem;">
-              <div class="couponInfo">
-                      <div class="couponContent">
-                        <p class="free">赠</p>
-                        <p class="couponText">原价90元总监洗剪吹造型第一次</p>
-                      </div>
-                      <p class="tip">使用规则：点击本店头像查看免单详情！</p>
-              </div>
-            </ion-item>
-            <ion-item lines="full" style="display: none">
-              Items11
-            </ion-item>
-            <ion-item lines="full" style="display: none">
-              Items12
-            </ion-item>
-            <ion-item lines="none" style="display: none; border-radius: 0 0 0.5rem 0.5rem;">
-              Items3
-            </ion-item>
-
-
           </ion-list>
-          
         </div>
-
 
         <div class="contentBox">
           <div class="contentTitle">
@@ -466,8 +332,6 @@
             <p class="title">活动介绍</p>
             <i class="line"></i>
           </div>
-        
-        
         
         </div>
 
@@ -491,7 +355,7 @@ Your browser does not support the video tag.
     <audio autoplay="autoplay" preload="" loop="loop" id="audio" src="assets/audio/3.mp3"></audio>
   </ion-fab-button>
   <ion-fab-button size="small" (click)="complain()"><p>投诉</p></ion-fab-button>
-  <ion-fab-button size="small" (click)="presentPopover()"><p>客服</p></ion-fab-button>
+  <ion-fab-button size="small" (click)="customerService()"><p>客服</p></ion-fab-button>
 </ion-fab>
 
 <ion-fab vertical="bottom" horizontal="start" slot="fixed" class="fab_button">
@@ -500,9 +364,9 @@ Your browser does not support the video tag.
 </ion-fab>
 
 <ion-fab vertical="bottom" horizontal="end" slot="fixed" class="fab_button">
-  <ion-fab-button size="small" (click)="sales()"><p>营业<br />情况</p></ion-fab-button>
-  <ion-fab-button color="success" (click)="coupon()" style="display: none"><p>我的<br />礼包</p></ion-fab-button>
-  <ion-fab-button color="success" (click)="presentAlertCollect('buy')"><p>领取<br />大礼包</p></ion-fab-button>
+  <ion-fab-button size="small" (click)="sales()" *ngIf="userinfo && userinfo.type==2"><p>营业<br />情况</p></ion-fab-button>
+  <ion-fab-button color="success" (click)="coupon()" *ngIf="userinfo && userinfo.grade>0"><p>我的<br />礼包</p></ion-fab-button>
+  <ion-fab-button color="success" (click)="presentAlertCollect('buy')" *ngIf="userinfo && userinfo.grade==0"><p>领取<br />大礼包</p></ion-fab-button>
 </ion-fab>
 
 </ion-content>

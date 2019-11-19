@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NavController, PopoverController, AlertController, ToastController } from '@ionic/angular';
+import { DomSanitizer } from '@angular/platform-browser';
 
-import { CustomerServiceComponent } from '../component/customer-service/customer-service.component';
 import { CommonService } from '../services/common.service';
 import { StorageService } from '../services/storage.service';
 import { UserDaoService } from '../services/user.dao.services';
@@ -18,8 +18,18 @@ declare var window: any;
 })
 export class HomePage extends BaseUI {
 
-  public userinfo: any = {
-    //openid: "osGnz081kpGgyULuJQicl_SwpPr4",
+  public bgCss = [
+    this.sanitizer.bypassSecurityTrustStyle(`url(http://app.yihemall.cn/assets/img/merchant0.png) 0% 0% / 100% 100%`),
+    this.sanitizer.bypassSecurityTrustStyle(`url(http://app.yihemall.cn/assets/img/merchant1.png) 0% 0% / 100% 100%`),
+    this.sanitizer.bypassSecurityTrustStyle(`url(http://app.yihemall.cn/assets/img/merchant2.png) 0% 0% / 100% 100%`),
+  ];
+
+  public none = this.sanitizer.bypassSecurityTrustStyle(`display:none`);
+  public border = this.sanitizer.bypassSecurityTrustStyle(`border-radius: 0 0 1rem 1rem;`);
+
+  public userinfo:any = {
+    openid: "",
+    grade: 0
   };
 
   public merchantList: [{}];
@@ -62,6 +72,7 @@ export class HomePage extends BaseUI {
     public common: CommonService,
     public storage: StorageService,
     public userDao: UserDaoService,
+    public sanitizer:DomSanitizer,
     public activatedRoute: ActivatedRoute,
     public navController: NavController,
     public alertController: AlertController,
@@ -106,17 +117,7 @@ export class HomePage extends BaseUI {
     } else if (!code || code.trim() == "") {
       //公众号验证，获得code，进而获得openid
       //如果code为空，则获取code
-      let api = "weixin/authorizeURL?redirect_uri=" + encodeURIComponent(this.common.config.app_domain + "home");//+"&parent_code="+parent_code;
-      api = parent_code ? (api + "&parent_code=" + parent_code) : api;
-      this.common.ajaxGet(api).then((response: any) => {
-        //console.log("response",response);
-        if (response && response.status.code==1) {
-          window.location=decodeURIComponent(response.data)+"";
-          //console.log('打开url',response.data);
-        } else {
-          super.presentFailureToast(this.toastController, "无法获得微信用户的信息，请重试");
-        }
-      })
+      this.getCode(parent_code);
       //如果code已经获取，那么获取openid以及用户的信息等
     } else {
       let api = "weixin/userinfo?code=" + code;// + "&parent_code=" + parent_code;
@@ -128,11 +129,25 @@ export class HomePage extends BaseUI {
           this.storage.set("userinfo_" + this.userinfo.openid, this.userinfo);
           console.log("userinfo", this.userinfo);
         } else {
-          super.presentFailureToast(this.toastController, "无法获得微信用户的信息，请重试");
+          //super.presentFailureToast(this.toastController, "无法获得微信用户的信息，请重试");
+          this.getCode(parent_code);//再重新刷一遍
         }
       })
     }
-    
+  }
+
+  getCode(parent_code) {
+    let api = "weixin/authorizeURL?redirect_uri=" + encodeURIComponent(this.common.config.app_domain + "home");//+"&parent_code="+parent_code;
+      api = parent_code ? (api + "&parent_code=" + parent_code) : api;
+      this.common.ajaxGet(api).then((response: any) => {
+        //console.log("response",response);
+        if (response && response.status.code==1) {
+          window.location=decodeURIComponent(response.data)+"";
+          //console.log('打开url',response.data);
+        } else {
+          super.presentFailureToast(this.toastController, "无法获得微信用户的信息，请重试");
+        }
+      })
   }
 
   async ionViewDidEnter() {
@@ -146,6 +161,10 @@ export class HomePage extends BaseUI {
     console.log("merchantList");
     console.log(this.merchantList);
     
+  }
+
+  ionViewWillLeave() {
+    this.isPlay? this.playAudio():"";
   }
 
   processTime() {
@@ -205,13 +224,22 @@ export class HomePage extends BaseUI {
     }, 1000);
   }
 
+  goTo(mid) {
+    this.navController.navigateForward('/info', {
+      queryParams: {
+        mid: mid,
+        openid: this.userinfo ? this.userinfo.openid : ""
+      }
+    })
+  }
+
   /**
    * 投诉，OK
    */
   complain() {
     this.navController.navigateForward('/complain', {
       queryParams: {
-        openid: this.userinfo.openid
+        openid: this.userinfo ? this.userinfo.openid : ""
       }
     })
   }
@@ -221,7 +249,7 @@ export class HomePage extends BaseUI {
   withdraw() {
     this.navController.navigateForward('/withdraw', {
       queryParams: {
-        openid: this.userinfo.openid
+        openid: this.userinfo ? this.userinfo.openid : ""
       }
     })
   }
@@ -229,7 +257,7 @@ export class HomePage extends BaseUI {
   share() {
     this.navController.navigateForward('/share', {
       queryParams: {
-        openid: this.userinfo.openid
+        openid: this.userinfo ? this.userinfo.openid : ""
       }
     })
 
@@ -287,7 +315,7 @@ export class HomePage extends BaseUI {
   sales() {
     this.navController.navigateForward('/sales-table', {
       queryParams: {
-        openid: this.userinfo.openid
+        openid: this.userinfo ? this.userinfo.openid : ""
       }
     })
   }
@@ -295,7 +323,18 @@ export class HomePage extends BaseUI {
   coupon() {
     this.navController.navigateForward('/coupon-list', {
       queryParams: {
-        openid: this.userinfo.openid
+        openid: this.userinfo ? this.userinfo.openid : ""
+      }
+    })
+  }
+
+  /**
+   * 联系客服
+   */
+  customerService() {
+    this.navController.navigateForward('/customer-service', {
+      queryParams: {
+        openid: this.userinfo ? this.userinfo.openid : ""
       }
     })
   }
@@ -305,7 +344,7 @@ export class HomePage extends BaseUI {
   application() {
     this.navController.navigateForward('/application', {
       queryParams: {
-        openid: this.userinfo.openid
+        openid: this.userinfo ? this.userinfo.openid : ""
       }
     })
   }
@@ -325,20 +364,6 @@ export class HomePage extends BaseUI {
       audio_img.setAttribute("src","assets/img/musical-notes.png");
       audio.play();
     }
-  }
-
-
-  /**
-   * 联系客服
-   * @param ev 
-   */
-  async presentPopover(ev: any) {
-    const popover = await this.popoverController.create({
-      component: CustomerServiceComponent,
-      event: ev,
-      translucent: true
-    });
-    return await popover.present();
   }
 
   /**
@@ -615,6 +640,7 @@ export class HomePage extends BaseUI {
             this.common.ajaxPost("user/activation", post).then(async (response: any) => {
               if (response && response['status'].code == 1) {
                 this.userinfo = response['data'];
+                this.storage.set("userinfo_" + this.userinfo.openid, this.userinfo);
                 //console.log(userinfo);
                 //刷新用户
 
@@ -678,6 +704,7 @@ export class HomePage extends BaseUI {
       if (result.status == 1) {
         //console.log("refreshUser OK");        
         this.userinfo = result.data;
+        this.storage.set("userinfo_" + this.userinfo.openid, this.userinfo);
       } else {
         super.presentFailureToast(this.toastController, result.message);
       }
@@ -719,11 +746,41 @@ export class HomePage extends BaseUI {
     this.common.ajaxPost(api, post).then(async (response: any) => {
       if (response && response.status.code == 1) {
         this.userinfo = response.data; //更新用户信息
+        this.storage.set("userinfo_" + this.userinfo.openid, this.userinfo);
       } else {
         super.presentFailureToast(this.toastController, response.status.message);
       }
     });
 
+  }
+
+  /**
+   * 展开和折叠优惠券
+   * @param mid 
+   * @param num 
+   */
+  expand_fold(mid, num) {
+
+    if(num<3) return;//3个以下，不操作展开和折叠
+
+    if (document.getElementById("m_" + mid + "_up").style.display == "none") {//展开
+       document.getElementById("m_" + mid + "_up").style.display = "block";
+      document.getElementById("m_" + mid + "_down").style.display = "none";
+
+      document.getElementById("m_" + mid + "_c_" + 1).style.borderRadius = "0";//第二个下面直角
+      document.getElementById("m_" + mid + "_c_" + (num-1)).style.borderRadius = "0 0 0.5rem 0.5rem";//最后一个下面半圆角度
+
+      for (let i = 2; i < num; i++) {
+        document.getElementById("m_" + mid + "_c_" + i).style.display = "block";
+      }
+    } else {//折叠
+      document.getElementById("m_" + mid + "_up").style.display = "none";
+      document.getElementById("m_" + mid + "_down").style.display = "block";
+      document.getElementById("m_" + mid + "_c_" + 1).style.borderRadius = "0 0 0.5rem 0.5rem";//折叠后，第二个下面半圆角
+      for (let i = 2; i < num; i++) {
+        document.getElementById("m_" + mid + "_c_" + i).style.display = "none";
+      }
+    }
   }
 
 

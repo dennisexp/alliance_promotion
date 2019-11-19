@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { NavController, ActionSheetController, ToastController } from '@ionic/angular';
+import { NavController, ToastController } from '@ionic/angular';
 
 import { BaseUI } from '../../component/baseui';
 import { CommonService } from '../../services/common.service';

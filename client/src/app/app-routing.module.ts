@@ -11,6 +11,7 @@ const routes: Routes = [
   { path: 'withdraw', loadChildren: './customer/withdraw/withdraw.module#WithdrawPageModule' },
   { path: 'complain', loadChildren: './customer/complain/complain.module#ComplainPageModule' },
   { path: 'info', loadChildren: './merchant/info/info.module#InfoPageModule' },
+  { path: 'customer-service', loadChildren: './customer/customer-service/customer-service.module#CustomerServicePageModule' },
 ];
 
 @NgModule({
