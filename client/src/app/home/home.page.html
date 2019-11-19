@@ -7,9 +7,10 @@
 </ion-header>
 
 <ion-content color="yihe">
-  <div>
     <!---->
-    <!-- <img src="http://giftadmin.chengzi001.cn/image/20190816/1565953592916883.png"> -->
+    <div class="poster">
+      <img src="assets/img/poster.jpg">
+    </div>
 
 
       <div class="adContent">
@@ -300,8 +301,9 @@
                     </div>
                   </div>
                 </div>
-                <div class="getCoupon" *ngIf="userinfo.grade==0">点击<br/>领取</div>
-                <div class="getCoupon" *ngIf="userinfo.grade>0">马上<br/>使用</div>
+                <!-- <div class="getCoupon" *ngIf="userinfo.grade==0" (click)="presentAlertCollect('buy')">点击<br/>领取</div> -->
+                <div class="getCoupon" *ngIf="userinfo.grade==0">即将<br/>开始</div>
+                <div class="getCoupon" *ngIf="userinfo.grade>0" (click)="coupon()">马上<br/>使用</div>
               </ion-list-header>
               <!--优惠券信息-->
               <div *ngFor="let coupon of merchant.coupons, let j = index">
@@ -332,17 +334,32 @@
             <p class="title">活动介绍</p>
             <i class="line"></i>
           </div>
-        
+
+          <div class="content_intro_box">
+            <div class="content_intro">
+              <strong>1、如何购买礼包？</strong><br />
+              点击购买输入姓名电话，支付成功即可！<br /><br />
+              <strong>2、如何使用电子券？</strong><br />
+              点击各商家电子券的使用，到商家店面出示界面即可，由商家店员进行核销！<br /><br />
+              <strong>3、购买后使用时间为多少？</strong><br />
+              需要注意的是活动的抢购截止时间并非使用的截止时间一般商家福利都有2-3个月的使用时间，具体以商家详细页为准！<br /><br />
+              <strong>4、本活动是不是所有商家显示福利都能使用？</strong><br />
+              对！购买后，所有商家显示的所有福利都能够使用！<br /><br />
+              <strong>5、这么多福利用不完怎么办？</strong><br />
+              本电子券认券不认人，觉得福利太多，可以带着亲朋好友一起使用免单福利！<br /><br />
+              注：本次活动联盟商家均证照齐全，正常营业，各商家以品宣传为准（用店内商品或服务代替现今昂贵的广告费回馈济南费者），才有了本次活动。再次声明本次活动真实有效，绝无任何硬性消费，请放心购买！
+            </div>
+          </div>
         </div>
-
-        <div class="apply" (click)="application()">
-          申请加入一合优品商家联盟
-        </div>
-
-
       </div>
-    
-  </div>
+      
+      <div class="poster">
+        <img src="assets/img/pormotion.jpg">
+      </div>
+
+      <div class="apply" (click)="application()">
+        申请加入一合优品商家联盟
+      </div>
 
   <!-- <video width="320" height="240" controls="controls">
   <source src="http://localhost:8801/videos/1499233652663.mp4" type="video/mp4" />
@@ -352,7 +369,7 @@ Your browser does not support the video tag.
 <ion-fab vertical="top" horizontal="end" slot="fixed" class="fab_button fab_right">
   <ion-fab-button size="small" (click)="playAudio()">
     <img class="audio_img" id="audio_img" src="assets/img/musical-notes.png" />
-    <audio autoplay="autoplay" preload="" loop="loop" id="audio" src="assets/audio/3.mp3"></audio>
+    <audio autoplay="autoplay" preload="" loop="loop" id="audio" [src]="common.config.img_domain+'audio/Coincidance.mp3'"></audio>
   </ion-fab-button>
   <ion-fab-button size="small" (click)="complain()"><p>投诉</p></ion-fab-button>
   <ion-fab-button size="small" (click)="customerService()"><p>客服</p></ion-fab-button>
@@ -360,13 +377,15 @@ Your browser does not support the video tag.
 
 <ion-fab vertical="bottom" horizontal="start" slot="fixed" class="fab_button">
   <ion-fab-button size="small" (click)="withdraw()"><p>提现</p></ion-fab-button>
-  <ion-fab-button color="danger" (click)="share()"><p>分享<br />赚红包</p></ion-fab-button>
+  <!-- <ion-fab-button color="danger" (click)="share()"><p>分享<br />赚红包</p></ion-fab-button> -->
+  <ion-fab-button color="danger"><p>即将<br />赚红包</p></ion-fab-button>
 </ion-fab>
 
 <ion-fab vertical="bottom" horizontal="end" slot="fixed" class="fab_button">
   <ion-fab-button size="small" (click)="sales()" *ngIf="userinfo && userinfo.type==2"><p>营业<br />情况</p></ion-fab-button>
   <ion-fab-button color="success" (click)="coupon()" *ngIf="userinfo && userinfo.grade>0"><p>我的<br />礼包</p></ion-fab-button>
-  <ion-fab-button color="success" (click)="presentAlertCollect('buy')" *ngIf="userinfo && userinfo.grade==0"><p>领取<br />大礼包</p></ion-fab-button>
+  <!-- <ion-fab-button color="success" (click)="presentAlertCollect('buy')" *ngIf="userinfo && userinfo.grade==0"><p>领取<br />大礼包</p></ion-fab-button> -->
+  <ion-fab-button color="success" *ngIf="userinfo && userinfo.grade==0"><p>即将<br />开始</p></ion-fab-button>
 </ion-fab>
 
 </ion-content>

@@ -109,7 +109,7 @@ let collection = {
             {
                 cid: { type: Number, required: true },//优惠券的id
                 label: { type: String, required: true },//名称
-                type: { type: Number, default: 2 }, //无限次使用1，单次使用2
+                type: { type: Number, default: 1 }, //单次使用1，无限次使用2
                 display_order:{ type: String, required: true }
             }
         ],

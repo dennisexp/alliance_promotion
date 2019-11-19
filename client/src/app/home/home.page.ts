@@ -63,9 +63,9 @@ export class HomePage extends BaseUI {
    */
   public timer: any = null;
 
-  private _endTime: Date = new Date('2019/12/15 23:59:59');
+  private _endTime: Date = new Date('2020/02/22 23:59:59');
   //private _endTime: Date = new Date('2019-11-09 21:26:15');
-  private _startTime: Date = new Date('2019/11/16 00:00:00');
+  private _startTime: Date = new Date('2019/11/22 09:13:00');
   //private _startTime: Date = new Date('2019-11-09 21:26:00');
   
   constructor(
@@ -768,7 +768,7 @@ export class HomePage extends BaseUI {
       document.getElementById("m_" + mid + "_down").style.display = "none";
 
       document.getElementById("m_" + mid + "_c_" + 1).style.borderRadius = "0";//第二个下面直角
-      document.getElementById("m_" + mid + "_c_" + (num-1)).style.borderRadius = "0 0 0.5rem 0.5rem";//最后一个下面半圆角度
+      document.getElementById("m_" + mid + "_c_" + (num-1)).style.borderRadius = "0 0 1rem 1rem";//最后一个下面半圆角度
 
       for (let i = 2; i < num; i++) {
         document.getElementById("m_" + mid + "_c_" + i).style.display = "block";
@@ -776,7 +776,7 @@ export class HomePage extends BaseUI {
     } else {//折叠
       document.getElementById("m_" + mid + "_up").style.display = "none";
       document.getElementById("m_" + mid + "_down").style.display = "block";
-      document.getElementById("m_" + mid + "_c_" + 1).style.borderRadius = "0 0 0.5rem 0.5rem";//折叠后，第二个下面半圆角
+      document.getElementById("m_" + mid + "_c_" + 1).style.borderRadius = "0 0 1rem 1rem";//折叠后，第二个下面半圆角
       for (let i = 2; i < num; i++) {
         document.getElementById("m_" + mid + "_c_" + i).style.display = "none";
       }

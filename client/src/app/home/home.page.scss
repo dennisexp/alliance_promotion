@@ -1,107 +1,21 @@
-.swiperBox {
-    height: 0.56rem;
-    position: fixed;
-    top: 5.45rem;
-    left: 0.2rem;
-    background: rgba(0, 0, 0, 0.6);
-    border-radius: 0.28rem;
-    display: flex;
-    align-items: center;
-    padding: 0.06rem;
-    z-index: 999;
+.poster{
+    padding: 1rem 1rem 0rem 1rem;
+    img{
+        width: 100%;
+        height: 100%;
+        margin: 0 auto;
+        border-radius: 1rem;
+    }
 }
 
-.swiper {
-    height: 0.49rem;
-    /*width: 2.76rem;*/
-    /*width: max-content;*/
-}
-
-.swiperImg {
-    width: 0.49rem;
-    height: 0.49rem;
-    border-radius: 50%;
-    background: #aaaaaa;
-    margin-right: 0.12rem;
-}
-
-.swiperText {
-    width: 2rem;
-    display: inline-block;
-    font-size: 0.22rem;
-    font-family: PingFangSC;
-    font-weight: 400;
-    color: #FFFFFF;
-    overflow: hidden;
-    text-overflow:ellipsis;
-    white-space: nowrap;
-    margin-top: 0.1rem;
-}
-
-.cube-slide-dots {
-    display: none !important;
-}
-
-.cube-slide-group {
-    /*height: 0.49rem!important;*/
-    display: flex;
-    flex-direction: column;
-}
-
-.complain {
-    width: 0.8rem;
-    height: 0.8rem;
-    background: rgba(0, 0, 0, 0.6);
-    border-radius: 50%;
-    font-size: 0.28rem;
-    font-family: PingFangSC;
-    font-weight: 400;
-    color: rgba(255, 255, 255, 1);
-    line-height: 0.8rem;
-    text-align: center;
-    position: fixed;
-    top: 2.64rem;
-    right: 0.2rem;
-    z-index: 999;
-}
-
-.service {
-    width: 0.8rem;
-    height: 0.8rem;
-    background: rgba(0, 0, 0, 0.6);
-    border-radius: 50%;
-    font-size: 0.28rem;
-    font-family: PingFangSC;
-    font-weight: 400;
-    color: rgba(255, 255, 255, 1);
-    line-height: 0.8rem;
-    text-align: center;
-    position: fixed;
-    top: 3.63rem;
-    right: 0.2rem;
-    z-index: 999;
-}
-
-.audioBox{
-    width: 0.8rem;
-    height: 0.8rem;
-    background: rgba(0, 0, 0, 0.6);
-    border-radius: 50%;
-    position: fixed;
-    top: 1.63rem;
-    right: 0.2rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 10;
-}
 .audio_img{
   width:70%;
   height: 70%;
 }
+
 .adContent {
     width: 100%;
-    padding: 0rem 5% 1.5rem 5%;
+    padding: 0rem 1rem 0rem 1rem;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -115,8 +29,8 @@
     align-items: center;
     justify-content: center;
     background: #FFFFFF;
-    border-radius: 0.5rem;
-    margin-top: 0.5rem;
+    border-radius: 1rem;
+    margin-top: 1rem;
 }
 
 .timeTitle {
@@ -372,12 +286,12 @@
 }
 
 .contact_text {
-    width: 90%;
+    width: 88%;
     font-size: 1.2rem;
     font-family: PingFang-SC-Medium;
     font-weight: 500;
     color: rgba(255, 255, 255, 1);
-    white-space: nowrap;
+    white-space: wrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
@@ -398,19 +312,11 @@
     font-family: PingFang-SC-Medium;
     font-weight: 500;
     color: rgba(255, 255, 255, 1);
-    // display: flex;
-    // flex-wrap: wrap;
-    // justify-content: center;
-    // align-items: center;
-    // margin-right: 1rem;
-    // margin-bottom: 0.5rem;
-    //margin: 0 auto;
+
 }
 
 .couponInfo{
     padding: 1rem 0 0 0rem;
-    // margin-left: 0.5rem;
-    // margin-top: 0.1rem;
 }
 
 .couponContent{
@@ -446,7 +352,7 @@
 .tip{
     font-size:1.2rem;
     font-family:PingFang-SC-Regular;
-    font-weight:400;
+    font-weight:500;
     color:rgba(178,178,178,1);
     margin: 0.2rem 0 0.5rem 2.5rem;
 }
@@ -480,16 +386,17 @@
 .apply{
     margin: 0 auto;
     flex: 1rem;
-    height: 4rem;
-    line-height: 4rem;
+    height: 6rem;
+    line-height: 6rem;
     font-size: 1.6rem;
+    font-weight: 500;
     text-align: center;
     background: #ff6600;
     color: #fff;
     border-radius: 1rem;
     border: 1px dashed #fff;
     padding: 0 2rem 0 2rem;
-    margin: 2rem 0 2rem 0;
+    margin: 1rem 8rem 1rem 8rem;
 }
 
 .fab_button{
@@ -507,4 +414,16 @@
     top: 8rem;
 }
 
+.content_intro_box {
+    margin-top: 1.5rem;
+    width: 100%;
+    background: rgba(255, 255, 255, 1);
+    border-radius: 1rem;
+    padding: 1.5rem;
+}
 
+.content_intro{
+    font-size: 1.6rem;
+    color:#000;
+    flex-wrap: wrap;
+}

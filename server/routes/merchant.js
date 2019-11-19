@@ -9,8 +9,13 @@ const MongoDB = require('../config/db');
    * 获取所有商家的信息
    */
 router.get('/all', async (ctx, next) => {
+
+  let condition = [
+    { $match: { "status": 1 }  },
+    { $sort: {display_order:1} }
+  ]
     
-  let ret = await MongoDB.findInTable("merchant", { status: 1 });
+  let ret = await MongoDB.aggregate("merchant", condition);
   
   console.log("可用商家的数量", ret.length);
 
