@@ -301,9 +301,9 @@
                     </div>
                   </div>
                 </div>
-                <!-- <div class="getCoupon" *ngIf="userinfo.grade==0" (click)="presentAlertCollect('buy')">点击<br/>领取</div> -->
-                <div class="getCoupon" *ngIf="userinfo.grade==0">即将<br/>开始</div>
-                <div class="getCoupon" *ngIf="userinfo.grade>0" (click)="coupon()">马上<br/>使用</div>
+                <!-- <div class="getCoupon" *ngIf="userinfo && userinfo.grade==0" (click)="presentAlertCollect('buy')">点击<br/>领取</div> -->
+                <div class="getCoupon" *ngIf="userinfo && userinfo.grade==0">即将<br/>开始</div>
+                <div class="getCoupon" *ngIf="userinfo && userinfo.grade>0" (click)="coupon()">马上<br/>使用</div>
               </ion-list-header>
               <!--优惠券信息-->
               <div *ngFor="let coupon of merchant.coupons, let j = index">
@@ -347,7 +347,7 @@
               对！购买后，所有商家显示的所有福利都能够使用！<br /><br />
               <strong>5、这么多福利用不完怎么办？</strong><br />
               本电子券认券不认人，觉得福利太多，可以带着亲朋好友一起使用免单福利！<br /><br />
-              注：本次活动联盟商家均证照齐全，正常营业，各商家以品宣传为准（用店内商品或服务代替现今昂贵的广告费回馈济南费者），才有了本次活动。再次声明本次活动真实有效，绝无任何硬性消费，请放心购买！
+              注：1、本次活动联盟商家排列顺序不分先后，均证照齐全，正常营业，各商家以品牌宣传为主（用店内商品或服务代替现今昂贵的广告费回馈济南费者），才有了本次活动。<br />2、再次声明本次活动真实有效，绝无任何硬性消费，请放心购买！<br />3、本次活动最终解释权归山东柒诚商业管理有限公司。
             </div>
           </div>
         </div>

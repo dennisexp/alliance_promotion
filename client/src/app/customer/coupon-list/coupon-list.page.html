@@ -5,9 +5,108 @@
         <ion-icon slot="icon-only" name="arrow-back" color="dark"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title color="yihe">我的福利券</ion-title>
+
+    <ion-segment color="yihe" [(ngModel)]="tab">
+      <ion-segment-button value="available" checked>
+        <ion-label>未使用</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="used">
+        <ion-label>已使用</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+
   </ion-toolbar>
 </ion-header>
-<ion-content>
+<ion-content color="yihe">
+  <div [ngSwitch]="tab" class="p_content">
+    <div *ngSwitchCase="'available'">
+      <ion-list class="merchants">
+        <!--列出每个店铺-->
+        <!--店铺的地址等信息-->
+        <div *ngFor="let merchant of availableCouponList, let i = index">
+          <ion-list-header id="m_{{merchant.mid}}" class="merchant_box" [style.background]='bgCss[i%3]'>
+            <div class="merchant_info_left" (click)="goTo(merchant.mid)">
+              <img [src]="common.config.img_domain+merchant.media.thumbnail_url" (click)="goTo(merchant.mid)" class="merchant_img">
+              <div class="merchant_info">
+                <p class="merchant_title">{{merchant.title}}</p>
+                <div class="merchant_contact">
+                  <img src="assets/img/call3.png" class="iconBox">
+                  <p class="contact_text">{{merchant.telephone.split(" ")[0]}}</p>
+                </div>
+                <div class="merchant_contact">
+                  <img src="assets/img/address3.png" class="iconBox">
+                  <p class="contact_text">{{merchant.address.text}}</p>
+                </div>
+              </div>
+            </div>
+            <!-- <div class="getCoupon" *ngIf="userinfo && userinfo.grade==0" (click)="presentAlertCollect('buy')">点击<br/>领取</div> -->
+            <div class="getCoupon" *ngIf="userinfo && userinfo.grade==0">即将<br/>开始</div>
+            <div class="getCoupon" *ngIf="userinfo && userinfo.grade>0" (click)="coupon()">马上<br/>使用</div>
+          </ion-list-header>
+          <!--优惠券信息-->
+          <div *ngFor="let coupon of merchant.coupons, let j = index">
+            <ion-item lines="full" id="m_{{merchant.mid}}_c_{{j}}" [style]="j==(merchant.coupons.length-1) ? border:''">
+              <div class="couponInfo">
+                <div class="couponContent">
+                  <p class="free">赠</p>
+                  <p class="couponText">{{coupon.label}}</p>
+                </div>
+                <p class="tip">使用规则：点击本店头像查看免单详情！</p>
+              </div>
+              <div class="arrowBox" >
+                <img src="assets/img/arrowright.png" id="m_{{merchant.mid}}_down" class="arrowright">
+              </div>
+              <div class="useBtn">
+                去使用
+              </div>
+            </ion-item>
+          </div>
+        </div>
+      </ion-list>
+    </div>
+
+    <div *ngSwitchCase="'used'">
+      <ion-list class="merchants">
+        <!--列出每个店铺-->
+        <!--店铺的地址等信息-->
+        <div *ngFor="let merchant of availableCouponList, let i = index">
+          <ion-list-header id="m_{{merchant.mid}}" class="merchant_box" [style.background]='bgCss[i%3]'>
+            <div class="merchant_info_left" (click)="goTo(merchant.mid)">
+              <img [src]="common.config.img_domain+merchant.media.thumbnail_url" (click)="goTo(merchant.mid)" class="merchant_img">
+              <div class="merchant_info">
+                <p class="merchant_title">{{merchant.title}}</p>
+                <div class="merchant_contact">
+                  <img src="assets/img/call3.png" class="iconBox">
+                  <p class="contact_text">{{merchant.telephone.split(" ")[0]}}</p>
+                </div>
+                <div class="merchant_contact">
+                  <img src="assets/img/address3.png" class="iconBox">
+                  <p class="contact_text">{{merchant.address.text}}</p>
+                </div>
+              </div>
+            </div>
+            <!-- <div class="getCoupon" *ngIf="userinfo && userinfo.grade==0" (click)="presentAlertCollect('buy')">点击<br/>领取</div> -->
+            <div class="getCoupon" *ngIf="userinfo && userinfo.grade==0">即将<br/>开始</div>
+            <div class="getCoupon" *ngIf="userinfo && userinfo.grade>0" (click)="coupon()">马上<br/>使用</div>
+          </ion-list-header>
+          <!--优惠券信息-->
+          <div *ngFor="let coupon of merchant.coupons, let j = index">
+            <ion-item lines="full" id="m_{{merchant.mid}}_c_{{j}}" [style]="j==(merchant.coupons.length-1) ? border:''">
+              <div class="couponInfo">
+                <div class="couponContent">
+                  <p class="free">赠</p>
+                  <p class="couponText">{{coupon.label}}</p>
+                </div>
+                <p class="tip">使用规则：点击本店头像查看免单详情！</p>
+              </div>
+              <div class="useBtn">
+                已使用
+              </div>
+            </ion-item>
+          </div>
+        </div>
+      </ion-list>
+    </div>
+  </div>
 
 </ion-content>

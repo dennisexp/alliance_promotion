@@ -11,9 +11,11 @@ const jsonp = require('koa-jsonp')
 const cors = require('koa2-cors')
 const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
-const logger = require('koa-logger')
+const koalogger = require('koa-logger')
 const debug = require('debug')('koa2:server')
 const path = require('path')
+const Moment = require("moment");
+
 const response = require('./services/response');
 
 const config = require('./config/config')
@@ -28,13 +30,25 @@ const merchant = require('./routes/merchant')
 // error handler
 onerror(app);
 
-
 router.use('/user', user);
 router.use('/weixin', weixin);
 router.use('/merchant', merchant);
 router.use(index);
 
+
 // middlewares
+// logger 使用插件替换自己写的
+// app.use(async (ctx, next) => {
+//   const start = new Date()
+//   await next()
+//   const ms = new Date() - start
+//   console.log(`${ctx.method} ${ctx.url} - ${ms}ms`)
+// })
+
+const logger = koalogger((str) => {                // 使用日志中间件
+  console.log(Moment().format('YYYY-MM-DD HH:mm:ss') + str);
+});
+
 app.use(convert(bodyparser({
   enableTypes: ['json', 'form', 'text'],
   extendTypes: {
@@ -44,20 +58,12 @@ app.use(convert(bodyparser({
   //.use(json())
   .use(jsonp())
   .use(cors())   //配置后台允许跨域
-  .use(logger())  
-  .use(require('koa-static')(__dirname + '/public'))
+  .use(logger)  
+  .use(require('koa-static')(__dirname + '/'+ config.static_path))
   .use(views(path.join(__dirname, '/views'), { options: {settings: {views: path.join(__dirname, 'views')}}, map: {'njk': 'nunjucks'}, extension: 'njk' }))
   .use(response)
   .use(router.routes())
   .use(router.allowedMethods())
-
-// logger
-app.use(async (ctx, next) => {
-  const start = new Date()
-  await next()
-  const ms = new Date() - start
-  console.log(`${ctx.method} ${ctx.url} - $ms`)
-})
 
 router.get('/', async (ctx, next) => {
   // ctx.body = 'Hello World'
@@ -74,5 +80,5 @@ app.on('error', function(err, ctx) {
 })
 
 module.exports = app.listen(config.domain.port, () => {
-  console.log(`Listening on http://localhost:${config.domain.port}`)
+  console.log(`Listening on http://localhost:${config.domain.port}`);
 })

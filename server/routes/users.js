@@ -1,37 +1,73 @@
 const router = require('koa-router')();
+
 const Util = require("../config/util");
-const Conifg = require("../config/config");
+const Config = require("../config/config");
 const MongoDB = require('../config/db');
 const userCtrl = require('../controller/user');
+const merchantCtrl = require('../controller/merchant');
 
 router.get('/', async (ctx, next) => {
   //ctx.body = 'this a users response! ' + Util.uuid(6, 32);
 
-  let ret = userCtrl.getInfoByInvitationCode("AJLXKD72");
 
-  console.log("用户信息", ret);
+  return;
+  let codes = ["AJLXKD72", "E7U16DFD", "8T3VXTSJ", "DD79ES5J", "96315GQR", "QC3VB7HT", "CHHUESWY", "A35637G5", "EFM32B55", "FDCFUC22", "1KDJ9LM9", "39KXYHNL", "GLLWX59U", "7HQX7BUE", "SHMMY76J", "93NENCBT", "3XW1R8SV", "PX48NHJV", "M5ARA9M7", "NJU6SEKW", "V8VN71M1", "3MRQVXPQ", "PCVMTXFA", "M54WBM4P", "PHHW2VXY", "PUSV6W57", "84AQRXMD", "26QC6QLK", "MGS7GL4A", "AFWVP8XY", "EMVN3GDX", "JVRVLYF6", "WUEQ1RCB", "S84Y4H1F", "LXA31C69", "W9TYTR33", "5D7TTAKC", "JXR5XGVP", "FQAJYY5F"];
 
-  ctx.success(ret);
+
+  //return;
+  //生成海报（带二维码的）
+  let invitation_code = "AJLXKD72"; 
+    let source_poster = Config.static_path + Config.poster_path + Config.source_poster;
+  console.log("source_poster", source_poster);
+  
+  codes.forEach( async element => {
+    
+
+      let url = Config.domain.client_domain + "/home?invitation_code=" + element;
+      console.log("----url----", url);
+
+      let code_img = await Util.createQr(url, "qr_" + element);
+      console.log("code_img", code_img);
+
+      let output = Config.static_path + Config.poster_path + element + ".jpg";
+      console.log("output", output);
+
+      let poster = await Util.addWaterMark(source_poster, code_img.data, output);
+      console.log("poster", poster);
+
+      if (poster.status == 0) {
+        console.log("--生成带海报的二维码错误--");
+      }
+      
+
+  });
+
+    
+    
+  
+
+  //ctx.body = ret2;
+  ctx.success("finish");
 
   
 
   //生成邀请码，需要和数据库确认下，是否重复
   return;
-  let invitation_code = "5203344";//Util.uuid(8,32);
-  let same = true;
-  while (same) {
-    let ret = await MongoDB.findInTable("user", { invitation_code: invitation_code });
-    console.log("activeCode", ret);
-    if (ret.length == 0) {
-      same = false;//没有重复的，可用
-      console.log("activeCode OK", invitation_code);
-    } else {
-      //有重复的，再来一个
+  // let invitation_code = "5203344";//Util.uuid(8,32);
+  // let same = true;
+  // while (same) {
+  //   let ret = await MongoDB.findInTable("user", { invitation_code: invitation_code });
+  //   console.log("activeCode", ret);
+  //   if (ret.length == 0) {
+  //     same = false;//没有重复的，可用
+  //     console.log("activeCode OK", invitation_code);
+  //   } else {
+  //     //有重复的，再来一个
       
-      invitation_code = Util.uuid(8, 32);
-      console.log("有重复，再来一个", invitation_code);
-    }
-  }
+  //     invitation_code = Util.uuid(8, 32);
+  //     console.log("有重复，再来一个", invitation_code);
+  //   }
+  // }
 
   ctx.success(invitation_code)
   
@@ -164,8 +200,8 @@ router.post('/withdraw', async (ctx, next) => {
     return;
   }
 
-  if (amount < Conifg.withdraw_threshold) {
-    ctx.error("提现金额不得低于"+Conifg.withdraw_threshold+"元");
+  if (amount < Config.withdraw_threshold) {
+    ctx.error("提现金额不得低于"+Config.withdraw_threshold+"元");
     return;
   }
 
@@ -293,8 +329,19 @@ router.post('/activation', async (ctx, next) => {
     console.log("激活结果", result);
 
     //user表操作成功，接着将提用户状态改为付费用户
-    if (result.status == 1 && result.data!=null) {
-      let ret = await userCtrl.update(openid, { grade: 1, name: name, mobilephone: mobilephone });
+    if (result.status == 1 && result.data != null) {
+      let updateInfo = { "grade": 1, "name": name, "mobilephone": mobilephone };
+
+      let coupons = await merchantCtrl.collectCoupons();
+      if (coupons.status==0) {//无可用的福利券，错误产生
+        console.log("用户", openid, "激活大礼包失败。");
+      } else {
+        console.log("用户", openid, "成功激活",coupons.data.length+"家商户的大礼包。");
+        updateInfo.statistics = coupons.data;
+      }
+
+    //更新用户信息
+      let ret = await userCtrl.update(openid, updateInfo);
       if (ret.status == 1) {
         console.log("用户激活成功。", ret.message);
         ctx.success(ret.data, "激活成功");
@@ -314,10 +361,70 @@ router.post('/activation', async (ctx, next) => {
 
 });
 
+/**
+ * 获得用户福利券信息
+ */
+router.get('/coupons', async (ctx, next) => {
+  
+  let openid = ctx.request.query.openid;
+  let sign = ctx.request.query.sign;
+  if (!openid || !sign) {
+    ctx.error("参数不完整");
+    return;
+  }
+
+  let verification = await userCtrl.verify(openid, { openid: openid }, sign);
+
+  if (verification.status == 1) {
+    //将优惠券分为已经使用的，和未使用的，查出来
+    let coupons = verification.data.statistics;
+    let availableCouponList = [];
+    let usedCouponList = [];
+    coupons.forEach(merchant => {
+      let info = {
+        mid: merchant.mid,
+        title: merchant.title,
+        telephone: merchant.telephone,
+        address: merchant.address.text,
+        cid: merchant.cid,
+        display_order: merchant.display_order,
+      }
+      let availableListTemp = [];
+      let usedTemp = [];
+      merchant.forEach(coupon => {
+        let c = {
+          cid: coupon.cid,
+          label: coupon.label,
+          type: coupon.type,
+          status: coupon.status
+        }
+        if (coupon.status==0) {
+          usedTemp.push(c);
+        } else {
+          availableListTemp.push(c);
+        }
+      });
+
+      info.coupons = availableListTemp;
+      availableCouponList.push(info);//未使用的券
+
+      info.coupons = usedTemp;
+      usedCouponList.push(info);//已经使用的券
+    });
+
+    let ret = {
+      openid: openid,
+      availableCouponList: availableCouponList,
+      usedCouponList: usedCouponList
+    }
+
+    ctx.success(ret);
+  } else {
+    ctx.error(verification.message);
+  }
+
+});
+
+
+
 module.exports=router.routes();
-
-
-
-
-
-

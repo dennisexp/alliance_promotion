@@ -84,7 +84,7 @@ export class HomePage extends BaseUI {
   
   ngOnInit() {
     let code: any;
-    let parent_code: any;
+    let invitation_code: any;
     let openid: any;
     
     this.activatedRoute.queryParams.subscribe((data: any) => {
@@ -95,7 +95,7 @@ export class HomePage extends BaseUI {
 
       if (data && data.state) {
         try {
-          parent_code = JSON.parse(data.state).parent_code;
+          invitation_code = JSON.parse(data.state).invitation_code;
         } catch(e){
           console.log("state error: ", data.state);
         }
@@ -117,11 +117,11 @@ export class HomePage extends BaseUI {
     } else if (!code || code.trim() == "") {
       //公众号验证，获得code，进而获得openid
       //如果code为空，则获取code
-      this.getCode(parent_code);
+      this.getCode(invitation_code);
       //如果code已经获取，那么获取openid以及用户的信息等
     } else {
-      let api = "weixin/userinfo?code=" + code;// + "&parent_code=" + parent_code;
-      api = parent_code ? (api + "&parent_code=" + parent_code) : api;
+      let api = "weixin/userinfo?code=" + code;// + "&parent_code=" + invitation_code;
+      api = invitation_code ? (api + "&parent_code=" + invitation_code) : api;
       this.common.ajaxGet(api).then((response:any)=>{
         //console.log("response: ",response);
         if (response && response.status.code == 1) {
@@ -130,15 +130,15 @@ export class HomePage extends BaseUI {
           console.log("userinfo", this.userinfo);
         } else {
           //super.presentFailureToast(this.toastController, "无法获得微信用户的信息，请重试");
-          this.getCode(parent_code);//再重新刷一遍
+          this.getCode(invitation_code);//再重新刷一遍
         }
       })
     }
   }
 
-  getCode(parent_code) {
-    let api = "weixin/authorizeURL?redirect_uri=" + encodeURIComponent(this.common.config.app_domain + "home");//+"&parent_code="+parent_code;
-      api = parent_code ? (api + "&parent_code=" + parent_code) : api;
+  getCode(invitation_code) {
+    let api = "weixin/authorizeURL?redirect_uri=" + encodeURIComponent(this.common.config.app_domain + "home");//+"&invitation_code="+invitation_code;
+      api = invitation_code ? (api + "&invitation_code=" + invitation_code) : api;
       this.common.ajaxGet(api).then((response: any) => {
         //console.log("response",response);
         if (response && response.status.code==1) {
@@ -224,6 +224,10 @@ export class HomePage extends BaseUI {
     }, 1000);
   }
 
+  /**
+   * 查看指定商家，OK -- 按钮
+   * @param mid 
+   */
   goTo(mid) {
     this.navController.navigateForward('/info', {
       queryParams: {

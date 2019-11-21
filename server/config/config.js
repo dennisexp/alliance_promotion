@@ -24,7 +24,18 @@ module.exports = {
     price: 0.01,
 
     //生成激活码的salt
-    yiheSalt:"S2O33A4@Mann1n9",
+    yihe_salt: "S2O33A4@Mann1n9",
+    
+    //静态资源地址
+    static_path: "public/",
+
+    //生成的二维码海报的相对路径（在静态资源下面）
+    poster_path: "images/posters/",
+
+    //原始海报的文件名
+    source_poster: "source_poster.jpg",
+
+    
 
     //微信公众号的配置和商户配置
     weixin: {

@@ -54,7 +54,7 @@ export class InfoPage implements OnInit {
   }
 
   ionViewDidEnter() {
-  	document.getElementById("regulation").innerHTML = this.merchant.regulation
+    document.getElementById("regulation").innerHTML = this.merchant.regulation ? this.merchant.regulation : "";
   }
 
   //手动滑动完成

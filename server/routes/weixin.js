@@ -8,6 +8,7 @@ const Config = require('../config/config');
 const MongoDB = require('../config/db');
 const Util = require('../config/util');
 const userCtrl = require('../controller/user');
+const merchantCtrl = require('../controller/merchant');
 
 var client = new OAuth(Config.weixin.mp_app_id, Config.weixin.mp_app_secret);
 
@@ -66,7 +67,7 @@ router.get('/', async (ctx, next) => {
 router.get('/authorizeURL', async (ctx, next) => {
 
   let redirect_uri = ctx.request.query.redirect_uri;
-  let parent_code = ctx.request.query.parent_code;
+  let invitation_code = ctx.request.query.invitation_code;
 
   //console.log(ctx.request.query);
   
@@ -76,12 +77,12 @@ router.get('/authorizeURL', async (ctx, next) => {
   }
 
   //产生获得code的url
-  let url = client.getAuthorizeURL(decodeURIComponent(redirect_uri), JSON.stringify({parent_code:parent_code}), 'snsapi_userinfo');
+  let url = client.getAuthorizeURL(decodeURIComponent(redirect_uri), JSON.stringify({ invitation_code: invitation_code }), 'snsapi_userinfo');
 
   //let url = "http://localhost:8100/home?code=021sIgA41MC5pT1p1Nz415SvA41sIgAg";
   ctx.success(encodeURIComponent(url));
 
-  //console.log("url", url);
+  console.log("获得微信授权网址", url);
 });
 
 /**
@@ -101,6 +102,7 @@ router.get('/userinfo', async (ctx, next) => {
 
   try {
     var user = await client.getUserByCode(code);
+    console.log("获取微信用户反馈信息", user);
   } catch (e) {
     ctx.error("无法获取微信用户信息");
     console.log("无法获取微信用户信息", e);
@@ -123,7 +125,6 @@ router.get('/userinfo', async (ctx, next) => {
 
   let exist = await MongoDB.findInTable("user", { "openid": user.openid });
   //console.log("用户是否存在", exist);
-  
 
   let params = {
     openid: user.openid,
@@ -160,6 +161,20 @@ router.get('/userinfo', async (ctx, next) => {
     //生成salt
     params.salt = Util.generateSalt();
 
+    //生成海报（带二维码的）
+    let source_poster = Config.static_path + Config.poster_path + Config.source_poster;
+    
+    let url = Config.domain.client_domain + "/home?invitation_code=" + invitation_code;
+    console.log("----url----", url);
+    
+    let code_img = await Util.createQr(url, "qr_" + invitation_code);
+    let output = Config.static_path + Config.poster_path + invitation_code + ".jpg";
+
+    let poster = await Util.addWaterMark(source_poster, code_img.data, output);
+    if (poster.status==0) {
+      console.log("--生成带海报的二维码错误--");
+    } 
+
     //检查验证码是否存在，不存在时设置为0    
     if (!parent_code) {
       parent_code = 0;
@@ -174,7 +189,8 @@ router.get('/userinfo', async (ctx, next) => {
     }
 
     //插上上级编号（验证码）//是不是要查找有没有存在？TODO
-    params.parent_code = parent_code+"";
+    params.parent_code = parent_code + "";
+    console.log("即将插入新用户的信息", params);
   }
 
   //console.log("待升级的用户信息", params);
@@ -189,13 +205,12 @@ router.get('/userinfo', async (ctx, next) => {
       let userinfo = res.data;
       userinfo.password = "";
       ctx.success(userinfo);
+      console.log("成功获得且返回用户信息", userinfo);
     } else {
       ctx.error("无法获取微信用户信息"); 
+      console.log("----无法获得用户信息----");
     }
-    
   });
-
-
   
 });
 
@@ -362,7 +377,18 @@ router.post('/mp_pay_notify', wx_mp_api.middleware("pay"), async (ctx, next) => 
     //交易状态TRADE_FINISHED的通知触发条件是商户签约的产品不支持退款功能的前提下，买家付款成功；或者，商户签约的产品支持退款功能的前提下，交易已经成功并且已经超过可退款期限。
     //修改付款用户的信息。
 
-    let userRet = await userCtrl.update(openid, { "grade": 1 });
+    let updateInfo = { "grade": 1 };
+
+    let coupons = await merchantCtrl.collectCoupons();
+    if (coupons.status==0) {//无可用的福利券，错误产生
+      console.log("用户", openid, "激活大礼包失败。");
+    } else {
+      console.log("用户", openid, "成功激活",coupons.data.length+"家商户的大礼包。");
+      updateInfo.statistics = coupons.data;
+    }
+
+    //更新用户信息
+    let userRet = await userCtrl.update(openid, updateInfo);
     
     if (userRet.status == 0) {
       console.log('订单处理结束：失败');

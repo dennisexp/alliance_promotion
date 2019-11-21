@@ -17,6 +17,9 @@ export class CommonService {
     //server_domain: 'http://192.168.2.138:8801/',
     img_domain: "http://products.yihemall.cn/",
 
+    //生成的二维码海报的相对路径（在静态资源下面）
+    poster_path: "images/posters/",
+
     //weixin_mp_app_id: "wxde4393c66d04cfd0",
 
     withdraw_threshold: 30,

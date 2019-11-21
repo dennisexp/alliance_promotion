@@ -36,31 +36,26 @@ let collection = {
             withdrawing: { type: Number, default: 0 },
             withdrawals: { type: Number, default: 0 }
         },
-        statistics: {
-            used: [
-                {
-                    mid: { type: Number, required: true }, //商户ID
-                    coupons: [ //各种优惠券
-                        {
-                            cid: { type: Number, required: true },//券的id
-                            payment: { type: Number, default: 0 },//付款金额
-                            pay_time: { type: Date, default: Date.now },//使用时间
-                        }
-                    ],   
-                }
-            ],
-            unused: [
-                {
-                    mid: { type: Number, required: true }, //商户ID
-                    coupons: [ //优惠券
-                        {
-                            cid: { type: Number, required: true },
-                            number: { type: Number, default: 1 },//张数
-                        }
-                    ],   
-                }
-            ],
-        },
+        statistics: [
+            {
+                mid: { type: Number, required: true }, //商户ID
+                cid: { type: Number, required: true }, //商户分类
+                title: { type: String, trim: true, required: true },
+                telephone: { type: String, required: true },
+                address: { type: String, required: true },//文本地址
+                display_order: { type: Number },   //排序顺序 012345
+                coupons: [ //各种优惠券
+                    {
+                        cid: { type: Number, required: true },//券的id
+                        label: { type: String, required: true },//名称
+                        type: { type: Number, default: 1 }, //单次使用1，无限次使用2
+                        status: { type: Number, default: 1 },//1有效（未使用），0失效（已使用）
+                        payment: { type: Number, default: 0 },//付款金额
+                        pay_time: { type: Date },//使用时间
+                    }
+                ],   
+            }
+        ],
         account: { //提现的账户信息
             account_type: { type: String, trim: true, default: '支付宝' },
             account_name: { type: String, trim: true, default: '' },
@@ -83,7 +78,7 @@ let collection = {
         openid: { type: String },
         title: { type: String, trim: true, required: true },
         telephone: { type: String, required: true },
-        display_order: { type: Number, default: 1 },   //排序顺序 12345
+        display_order: { type: Number, default: 1 },   //排序顺序 012345
         status: { type: Number, default: 1 },         //是否显示(上架1，下架-1，草稿0，删除-2等)
         cid: { type: Number, required: true },  //类别id
         recommend: { type: Number, default: 0 },  //特别推荐
@@ -110,7 +105,7 @@ let collection = {
                 cid: { type: Number, required: true },//优惠券的id
                 label: { type: String, required: true },//名称
                 type: { type: Number, default: 1 }, //单次使用1，无限次使用2
-                display_order:{ type: String, required: true }
+                display_order:{ type: Number, required: true }
             }
         ],
         regulation: String,
@@ -141,10 +136,8 @@ let collection = {
         usage_id: { type: Number, unique: true },
         openid: { type: String, required: true },
         mid: { type: Number, required: true }, //商户ID
-        coupons: {
-            cid: { type: Number, required: true },
-            number: { type: Number, default: 1 },//张数
-        },
+        cid: { type: Number, required: true },//券的id
+        coupon: { type: String, required: true },//折扣券的标题
         payment: { type: Number, default: 0 },//付款金额
         use_time: { type: Date, default: Date.now },//使用时间
         status: { type: Number, default: 0 },//0:待商家确认，1：已确认
