@@ -1,7 +1,15 @@
 .p_content{
-    padding: 0.5rem;
+    padding: 1rem;
 }
 
+.blank {
+    font-size: 1.8rem;
+    text-align: center;
+    padding:8rem 0 40rem 0;
+    background: #f4f5f8;
+    color: #ff6600;
+    border-radius: 1rem;
+}
 
 .merchants {
     width: 100%;
@@ -11,32 +19,18 @@
 }
 .merchant_box {
     width: 100%;
-    padding: 1.5rem;
-    margin-top: 1.5rem;
-}
-
-.merchant_info_left {
-    width: 75%;
-    display: flex;
-    align-items: center;
-}
-
-.merchant_img {
-    width: 5rem;
-    height: 5rem;
-    border-radius: 50%;
-    background: #aaa;
-    margin-right: 0.5rem;
+    padding: 1.5rem 2.5rem 1.5rem 2.5rem;
+    margin-top: 1rem;
 }
 
 .merchant_info {
-    width: 80%;
+    width: 100%;
     display: flex;
     flex-direction: column;
 }
 
 .merchant_title {
-    font-size: 1.4rem;
+    font-size: 1.6rem;
     font-family: PingFang-SC-Medium;
     font-weight: 500;
     color: rgba(255, 255, 255, 1);
@@ -48,7 +42,7 @@
 }
 
 .contact_text {
-    width: 88%;
+    width: 100%;
     font-size: 1.2rem;
     font-family: PingFang-SC-Medium;
     font-weight: 500;
@@ -102,7 +96,7 @@
 }
 
 .couponText {
-    width: 70%;
+    width: 75%;
     font-size: 1.4rem;
     font-family: PingFang-SC-Medium;
     font-weight: 500;
@@ -120,18 +114,14 @@
 }
 
 .useBtn {
-    width: 15%;
+    width: 18%;
     display: flex;
     position: absolute;
     top: 2rem;
     right: 0px;
-    font-size: 1.4rem;
-    height: 1.4rem;
+    font-size: 1.6rem;
+    height: 1.6rem;
     color: rgb(255, 0, 0);
-    padding-right: 0%;
+    padding-right: 0.5rem;
 }
 
-.arrow {
-    width: 1.5rem;
-    height: 1.5rem;
-}

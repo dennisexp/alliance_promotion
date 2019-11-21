@@ -137,7 +137,7 @@ let collection = {
         openid: { type: String, required: true },
         mid: { type: Number, required: true }, //商户ID
         cid: { type: Number, required: true },//券的id
-        coupon: { type: String, required: true },//折扣券的标题
+        coupon: { type: String },//折扣券的标题
         payment: { type: Number, default: 0 },//付款金额
         use_time: { type: Date, default: Date.now },//使用时间
         status: { type: Number, default: 0 },//0:待商家确认，1：已确认

@@ -113,6 +113,72 @@ module.exports = {
         
     },
 
+    /**
+     * 将用户的福利券，分开为已使用和未使用
+     * @param {*} couponList 
+     */
+    sepatateCoupons(couponList) {
+        let availableCouponList = [];
+        let usedCouponList = [];
+        couponList.forEach(merchant => {
+            if (!merchant || !merchant.coupons) {
+                //continue;
+            }
+            let info = {
+                mid: merchant.mid,
+                title: merchant.title,
+                telephone: merchant.telephone,
+                address: merchant.address,
+                cid: merchant.cid,
+                display_order: merchant.display_order,
+            }
+            let availableListTemp = [];
+            let usedTemp = [];
+
+            //console.log("user merchant");
+            //console.log(merchant);
+            
+            merchant.coupons.forEach(coupon => {
+                //console.log("user coupon");
+            //console.log(coupon);
+                let c = {
+                cid: coupon.cid,
+                label: coupon.label,
+                type: coupon.type,
+                status: coupon.status
+                }
+                if (coupon.status==0) {
+                usedTemp.push(c);
+                } else {
+                availableListTemp.push(c);
+                }
+            });
+
+            //   console.log("availableListTemp");
+            // console.log(availableListTemp);
+            // console.log("usedTemp");
+            //   console.log(usedTemp);
+            
+            if (availableListTemp.length>0) {
+                let temp = info;
+                temp.coupons = availableListTemp;
+                availableCouponList.push(temp);//未使用的券
+            }
+
+            if (usedTemp.length>0) {
+                let temp = info;
+                temp.coupons = usedTemp;
+                usedCouponList.push(temp);//已经使用的券
+            }
+        });
+
+        let ret = {
+            availableCouponList: availableCouponList,
+            usedCouponList: usedCouponList
+        }
+        return ret;
+    }
+
     
 
     

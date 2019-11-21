@@ -32,7 +32,7 @@ export class HomePage extends BaseUI {
     grade: 0
   };
 
-  public merchantList: [{}];
+  public merchantList:any = [];
 
   /**
    * 倒计时剩余天数
@@ -88,7 +88,7 @@ export class HomePage extends BaseUI {
     let openid: any;
     
     this.activatedRoute.queryParams.subscribe((data: any) => {
-      console.log("local data: ", data);
+      //console.log("local data: ", data);
       if (data && data.code) {
         code = data.code;
       }
@@ -127,7 +127,7 @@ export class HomePage extends BaseUI {
         if (response && response.status.code == 1) {
           this.userinfo = response.data;//获得用户信息
           this.storage.set("userinfo_" + this.userinfo.openid, this.userinfo);
-          console.log("userinfo", this.userinfo);
+          //console.log("userinfo", this.userinfo);
         } else {
           //super.presentFailureToast(this.toastController, "无法获得微信用户的信息，请重试");
           this.getCode(invitation_code);//再重新刷一遍
@@ -157,9 +157,8 @@ export class HomePage extends BaseUI {
     if (merchants && merchants['status'].code == 1) {
       this.merchantList = merchants['data'];
     }
-
-    console.log("merchantList");
-    console.log(this.merchantList);
+    //console.log("merchantList");
+    //console.log(this.merchantList);
     
   }
 
