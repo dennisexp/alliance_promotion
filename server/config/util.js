@@ -85,7 +85,7 @@ module.exports = {
         for(let j=0;j<tempArr.length;j++){
             tempStr+=tempArr[j]+json[tempArr[j]]
         }
-        console.log(tempStr);
+        //console.log(tempStr);
         return Md5(tempStr);
     },
 

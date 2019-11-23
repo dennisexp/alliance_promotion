@@ -121,9 +121,7 @@ module.exports = {
         let availableCouponList = [];
         let usedCouponList = [];
         couponList.forEach(merchant => {
-            if (!merchant || !merchant.coupons) {
-                //continue;
-            }
+            //先弄可用的券
             let info = {
                 mid: merchant.mid,
                 title: merchant.title,
@@ -133,24 +131,16 @@ module.exports = {
                 display_order: merchant.display_order,
             }
             let availableListTemp = [];
-            let usedTemp = [];
-
-            //console.log("user merchant");
-            //console.log(merchant);
             
             merchant.coupons.forEach(coupon => {
-                //console.log("user coupon");
-            //console.log(coupon);
                 let c = {
-                cid: coupon.cid,
-                label: coupon.label,
-                type: coupon.type,
-                status: coupon.status
+                    cid: coupon.cid,
+                    label: coupon.label,
+                    type: coupon.type,
+                    status: coupon.status
                 }
-                if (coupon.status==0) {
-                usedTemp.push(c);
-                } else {
-                availableListTemp.push(c);
+                if (coupon.status==1) {
+                    availableListTemp.push(c);
                 }
             });
 
@@ -165,6 +155,40 @@ module.exports = {
                 availableCouponList.push(temp);//未使用的券
             }
 
+        });
+
+        couponList.forEach(merchant => {
+            //在弄已失效的
+            let info = {
+                mid: merchant.mid,
+                title: merchant.title,
+                telephone: merchant.telephone,
+                address: merchant.address,
+                cid: merchant.cid,
+                display_order: merchant.display_order,
+            }
+            let usedTemp = [];
+
+            //console.log("user merchant");
+            //console.log(merchant);
+            
+            merchant.coupons.forEach(coupon => {
+                let c = {
+                    cid: coupon.cid,
+                    label: coupon.label,
+                    type: coupon.type,
+                    status: coupon.status
+                }
+                if (coupon.status==0) {
+                    usedTemp.push(c);
+                } 
+            });
+
+            //   console.log("availableListTemp");
+            // console.log(availableListTemp);
+            // console.log("usedTemp");
+            //   console.log(usedTemp);
+            
             if (usedTemp.length>0) {
                 let temp = info;
                 temp.coupons = usedTemp;

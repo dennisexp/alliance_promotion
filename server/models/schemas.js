@@ -26,6 +26,7 @@ let collection = {
         password: { type: String },
         salt: String,
         type: { type: Number, default: 1 },  //会员类型，1：用户，2：用户兼商户
+        mid: { type: Number },  //如果会员类型，2用户兼商户，则这里填商家的id
         grade: { type: Number, default: 0 },//0：未付款（30元），1：已付款(或者已激活为有券用户)的普通用户（70元），2：推广员（100元），3：合伙人（120），4：领导人（150），6：Achilles（190）
         status: { type: Number, default: 1 },
         create_time: { type: Date, default: Date.now },
@@ -75,7 +76,6 @@ let collection = {
      */
     merchant: {
         mid: { type: Number, unique: true },
-        openid: { type: String },
         title: { type: String, trim: true, required: true },
         telephone: { type: String, required: true },
         display_order: { type: Number, default: 1 },   //排序顺序 012345

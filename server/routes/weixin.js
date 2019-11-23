@@ -82,7 +82,9 @@ router.get('/authorizeURL', async (ctx, next) => {
   //let url = "http://localhost:8100/home?code=021sIgA41MC5pT1p1Nz415SvA41sIgAg";
   ctx.success(encodeURIComponent(url));
 
-  console.log("获得微信授权网址", url);
+  let pv = await Util.getNextSequenceValue("page_view");
+
+  console.log("-------累计访问量：", pv, "-------");
 });
 
 /**
@@ -102,10 +104,10 @@ router.get('/userinfo', async (ctx, next) => {
 
   try {
     var user = await client.getUserByCode(code);
-    console.log("获取微信用户反馈信息", user);
+    console.log("获取微信用户反馈信息:\n", user);
   } catch (e) {
     ctx.error("无法获取微信用户信息");
-    console.log("无法获取微信用户信息", e);
+    console.log("无法获取微信用户信息:\n", e);
     return;
   }
   //let user = await client.getUserByCode(code);
@@ -145,7 +147,7 @@ router.get('/userinfo', async (ctx, next) => {
     let same = true;
     while (same) {
       let ret = await MongoDB.findInTable("user", { invitation_code: invitation_code });
-      console.log("invitation_code", ret);
+      //console.log("invitation_code", ret);
       if (ret.length == 0) {
         same = false;//没有重复的，可用
         console.log("invitation_code OK", invitation_code);
@@ -165,7 +167,7 @@ router.get('/userinfo', async (ctx, next) => {
     let source_poster = Config.static_path + Config.poster_path + Config.source_poster;
     
     let url = Config.domain.client_domain + "/home?invitation_code=" + invitation_code;
-    console.log("----url----", url);
+    //console.log("----url----", url);
     
     let code_img = await Util.createQr(url, "qr_" + invitation_code);
     let output = Config.static_path + Config.poster_path + invitation_code + ".jpg";
@@ -177,40 +179,37 @@ router.get('/userinfo', async (ctx, next) => {
 
     //检查验证码是否存在，不存在时设置为0    
     if (!parent_code) {
-      parent_code = 0;
+      parent_code = Config.default_invitation_code;
     } else {
       let ret = await MongoDB.findInTable("user", { invitation_code: parent_code });
       if (ret.length == 0) {
         console.log("上级的邀请码不正确", parent_code);
-        parent_code = 0;
+        parent_code = Config.default_invitation_code;
       } else {
         //正确的
       }
     }
 
-    //插上上级编号（验证码）//是不是要查找有没有存在？TODO
     params.parent_code = parent_code + "";
     console.log("即将插入新用户的信息", params);
   }
 
   //console.log("待升级的用户信息", params);
-  
-
   let options = { upsert: true, new: true, setDefaultsOnInsert: true };
   //存在的话，更新信息。
-  await MongoDB.findOneAndModify("user",{"openid":user.openid}, params, options).then(res => { 
+  await MongoDB.findOneAndModify("user", { "openid": user.openid }, params, options).then(res => {
     // console.log("订单状态修改后");
     //console.log(res);
     if (res.status == 1 && res.data) {
       let userinfo = res.data;
       userinfo.password = "";
       ctx.success(userinfo);
-      console.log("成功获得且返回用户信息", userinfo);
+      //console.log("成功获得且返回用户信息", userinfo);
     } else {
-      ctx.error("无法获取微信用户信息"); 
+      ctx.error("无法获取微信用户信息");
       console.log("----无法获得用户信息----");
     }
-  });
+  })
   
 });
 
@@ -417,10 +416,12 @@ router.post('/mp_pay_notify', wx_mp_api.middleware("pay"), async (ctx, next) => 
  * 获取微信JS的配置
  */
 router.get('/js_config', async (ctx, next) => {
+  let url = ctx.request.query.url;
+
   let param = {
-    debug: true,
-    jsApiList: ['updateAppMessageShareData', 'updateTimelineShareData'],
-    url: Config.domain.client_domain
+    debug: false,
+    jsApiList: ['updateAppMessageShareData', 'updateTimelineShareData','onMenuShareTimeline','onMenuShareAppMessage'],
+    url: decodeURIComponent(url)
   };
   let config = await wx_api.getJsConfig(param);
 

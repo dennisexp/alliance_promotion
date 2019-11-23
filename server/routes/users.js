@@ -219,10 +219,12 @@ router.post('/withdraw', async (ctx, next) => {
     let userinfo = verification.data;
     if (amount > userinfo.balance.bonus) {
       ctx.error("不得超过可提现的金额");
+      return;
     }
 
     if (!userinfo.account.account_name || !userinfo.account.account_number) {
       ctx.error("提现账户信息不完整，请先填写完整再提现");
+      return;
     }
 
     //签名验证通过，操作提现: user表和withdraw表
@@ -415,11 +417,13 @@ router.post('/usage', async (ctx, next) => {
 
   //  签名正确，插入usage表，已经将改福利券改为已经使用：0
   if (verification.status == 1) {
+
+
     //签名验证通过，操作提现: user表和coupon_usage表
-    let result = await MongoDB.findOneAndModify("user", { "openid": openid, "statistics.mid": mid, "statistics.coupons.cid": coupon_id }, { "statistics.coupons.status": 0 });
+    //let result = await MongoDB.findOneAndModify("user", { "openid": openid, "statistics.mid": mid, "statistics.coupons.cid": coupon_id, "statistics.coupons.type":1 }, { "statistics.coupons.status": 0 });
 
     //user表操作成功，接着将提交申请插入
-    if (result.status == 1) {
+    //if (result.status == 1) {
       let uid = await Util.getNextSequenceValue("coupon_usage");
 
       let coupon_usage = {
@@ -436,7 +440,13 @@ router.post('/usage', async (ctx, next) => {
         if (res.status == 1) {
 
           //将优惠券分为已经使用的，和未使用的，查出来
-          let couponList = verification.data.statistics;
+          let couponList=[];
+          // if (result.data) {
+          //   couponList = result.data.statistics;
+          // } else {
+            couponList = verification.data.statistics;
+          //}
+          
           let ret = userCtrl.sepatateCoupons(couponList);
           ret.openid = openid;
 
@@ -447,12 +457,13 @@ router.post('/usage', async (ctx, next) => {
         }
       });
       
-    } else {
-      ctx.error("提现操作失败，请返回重试或联系客服");
-    }
+    // } else {
+    //   ctx.error("提现操作失败，请返回重试或联系客服");
+    // }
 
     //1、将该福利券插入coupon_usage
   } else {
+    
     ctx.error(verification.message);
   }
 });

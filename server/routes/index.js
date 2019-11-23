@@ -25,7 +25,8 @@ router.get('/initDB', async (ctx, next) => {
     { key: "feedback", sequence_value: 1 },
     { key: "withdraw", sequence_value: 1 },
     { key: "application", sequence_value: 1 },
-    { key: "activation", sequence_value: 1 }
+    { key: "activation", sequence_value: 1 },
+    { key: "page_view", sequence_value: 1 }
   ];
 
   // await mongoDB.insertMany("counter",counter).then(result => {
