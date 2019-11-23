@@ -99,10 +99,10 @@ module.exports = {
         ret.data.forEach(order => {
             order.status == 0 ? orderPendingList.push(order) : orderFinishedList.push(order);
         });
-        console.log("orderPendingList");
-        console.log(orderPendingList);
-        console.log("orderFinishedList");
-        console.log(orderFinishedList);
+        // console.log("orderPendingList");
+        // console.log(orderPendingList);
+        // console.log("orderFinishedList");
+        // console.log(orderFinishedList);
 
         let list = {
             orderPendingList: orderPendingList,

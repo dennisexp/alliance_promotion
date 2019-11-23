@@ -727,4 +727,13 @@ export class HomePage extends BaseUI {
     }
   }
 
+  //锚点操作
+  scrollIntoView(id: string){
+    let element = document.getElementById(id);
+    if(element){
+      element.scrollIntoView({behavior: "auto", block: "center", inline: "nearest"});
+    }
+  }
+
+
 }

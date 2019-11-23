@@ -2,6 +2,21 @@
     padding: 1rem;
 }
 
+.fab_button{
+    ion-fab-button{
+        --background:rgba(0,0,0,0.5);
+        --color:#fff;
+        p{
+            font-size: 1.2rem;
+            font-weight:500;
+        }
+    }
+}
+
+.fab_left_top_margin{
+    top: 6rem;
+}
+
 .blank {
     font-size: 1.8rem;
     text-align: center;

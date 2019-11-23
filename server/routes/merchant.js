@@ -8,11 +8,11 @@ const merchantCtrl = require('../controller/merchant');
   router.get('/', async (ctx, next) => {
     //ctx.body = 'this a merchants response!';
 
-    let mid = 10;
+    // let mid = 10;
 
-    let salesRes = await merchantCtrl.getSales(mid);
+    // let salesRes = await merchantCtrl.getSales(mid);
 
-    ctx.success(salesRes)
+    // ctx.success(salesRes)
 
     return;
 
@@ -146,10 +146,13 @@ router.post('/sales', async (ctx, next) => {
     return;
   }
 
+  //如果商户设置退回该券的话（状态-1）。则需要将顾客的券的状态改回来。
+  let res = await userCtrl.validateCoupon(ret.data.openid, ret.data.mid, ret.data.cid);
+
   //获取操作后的销售记录
   let sales = await merchantCtrl.getSales(verification.data.mid);
 
-  sales.status == 1 ? ctx.success(sales.data) : ctx.error(sales.message);
+  ret.status == 1 ? ctx.success(sales.data) : ctx.error(sales.message);
 
 });
 

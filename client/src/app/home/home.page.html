@@ -285,7 +285,7 @@
           <ion-list class="merchants">
             <!--列出每个店铺-->
             <!--店铺的地址等信息-->
-            <div *ngFor="let merchant of merchantList, let i = index">
+            <div *ngFor="let merchant of merchantList, let i = index" id="C_{{merchant.cid}}_M_{{merchant.display_order}}">
               <ion-list-header class="merchant_box" [style.background]='bgCss[i%3]'>
                 <div class="merchant_info_left" (click)="goTo(merchant.mid)">
                   <img [src]="common.config.img_domain+merchant.media.thumbnail_url" (click)="goTo(merchant.mid)" class="merchant_img">
@@ -293,7 +293,7 @@
                     <p class="merchant_title">{{merchant.title}}</p>
                     <div class="merchant_contact">
                       <img src="assets/img/call3.png" class="iconBox">
-                      <p class="contact_text">{{merchant.telephone.split(" ")[0]}}</p>
+                      <p class="contact_text">{{merchant.telephone}}</p>
                     </div>
                     <div class="merchant_contact">
                       <img src="assets/img/address3.png" class="iconBox">
@@ -303,7 +303,7 @@
                 </div>
                 <div class="getCoupon" *ngIf="userinfo && userinfo.grade==0" (click)="presentAlertCollect('buy')">点击<br/>领取</div>
                 <!-- <div class="getCoupon" *ngIf="userinfo && userinfo.grade==0">即将<br/>开始</div> -->
-                <div class="getCoupon" *ngIf="userinfo && userinfo.grade>0" (click)="coupon()">马上<br/>使用</div>
+                <div class="getCoupon" *ngIf="userinfo && userinfo.grade>0" (click)="goTo(merchant.mid)">了解<br/>详情</div>
               </ion-list-header>
               <!--优惠券信息-->
               <div *ngFor="let coupon of merchant.coupons, let j = index">
@@ -361,31 +361,39 @@
         申请加入一合优品商家联盟
       </div>
 
-  <!-- <video width="320" height="240" controls="controls">
-  <source src="http://localhost:8801/videos/1499233652663.mp4" type="video/mp4" />
-Your browser does not support the video tag.
-</video> -->
 
-<ion-fab vertical="top" horizontal="end" slot="fixed" class="fab_button fab_right">
-  <ion-fab-button size="small" (click)="playAudio()">
-    <img class="audio_img" id="audio_img" src="assets/img/musical-notes.png" />
-    <audio autoplay="autoplay" preload="" loop="loop" id="audio" [src]="common.config.img_domain+'audio/Coincidance.mp3'"></audio>
-  </ion-fab-button>
-  <ion-fab-button size="small" (click)="complain()"><p>投诉</p></ion-fab-button>
-  <ion-fab-button size="small" (click)="customerService()"><p>客服</p></ion-fab-button>
-</ion-fab>
+  <ion-fab vertical="top" horizontal="start" slot="fixed" class="fab_button fab_left_top_margin">
+    <ion-fab-button>商家<br />分类</ion-fab-button>
+      <ion-fab-list  side="bottom">
+        <ion-fab-button (click)="scrollIntoView('C_1_M_0')"><p>餐饮<br />住宿</p></ion-fab-button>
+        <ion-fab-button (click)="scrollIntoView('C_2_M_0')"><p>教育<br />培训</p></ion-fab-button>
+        <ion-fab-button (click)="scrollIntoView('C_3_M_0')"><p>美容<br />美发</p></ion-fab-button>
+        <ion-fab-button (click)="scrollIntoView('C_4_M_0')"><p>养生<br />保健</p></ion-fab-button>
+        <ion-fab-button (click)="scrollIntoView('C_5_M_0')"><p>生活<br />服务</p></ion-fab-button>
+        <ion-fab-button (click)="scrollIntoView('C_7_M_0')"><p>旅游<br />摄影</p></ion-fab-button>
+      </ion-fab-list>
+  </ion-fab>
 
-<ion-fab vertical="bottom" horizontal="start" slot="fixed" class="fab_button">
-  <ion-fab-button size="small" (click)="withdraw()"><p>提现</p></ion-fab-button>
-  <ion-fab-button color="danger" (click)="share()"><p>分享<br />赚红包</p></ion-fab-button>
-  <!-- <ion-fab-button color="danger"><p>分享<br />赚红包</p></ion-fab-button> -->
-</ion-fab>
+  <ion-fab vertical="top" horizontal="end" slot="fixed" class="fab_button fab_right_top_margin">
+    <ion-fab-button size="small" (click)="playAudio()">
+      <img class="audio_img" id="audio_img" src="assets/img/musical-notes.png" />
+      <audio autoplay="autoplay" preload="preload" loop="loop" id="audio" [src]="common.config.img_domain+'audio/Coincidance.mp3'"></audio>
+    </ion-fab-button>
+    <ion-fab-button size="small" (click)="complain()"><p>投诉</p></ion-fab-button>
+    <ion-fab-button size="small" (click)="customerService()"><p>客服</p></ion-fab-button>
+  </ion-fab>
 
-<ion-fab vertical="bottom" horizontal="end" slot="fixed" class="fab_button">
-  <ion-fab-button size="small" (click)="sales()" *ngIf="userinfo && userinfo.type==2"><p>营业<br />情况</p></ion-fab-button>
-  <ion-fab-button color="success" (click)="coupon()" *ngIf="userinfo && userinfo.grade>0"><p>我的<br />礼包</p></ion-fab-button>
-  <ion-fab-button color="success" (click)="presentAlertCollect('buy')" *ngIf="userinfo && userinfo.grade==0"><p>领取<br />大礼包</p></ion-fab-button>
-  <!-- <ion-fab-button color="success" *ngIf="userinfo && userinfo.grade==0"><p>即将<br />开始</p></ion-fab-button> -->
-</ion-fab>
+  <ion-fab vertical="bottom" horizontal="start" slot="fixed" class="fab_button">
+    <ion-fab-button size="small" (click)="withdraw()"><p>提现</p></ion-fab-button>
+    <ion-fab-button color="danger" (click)="share()"><p>分享<br />赚红包</p></ion-fab-button>
+    <!-- <ion-fab-button color="danger"><p>分享<br />赚红包</p></ion-fab-button> -->
+  </ion-fab>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" class="fab_button">
+    <ion-fab-button size="small" (click)="sales()" *ngIf="userinfo && userinfo.type==2"><p>营业<br />情况</p></ion-fab-button>
+    <ion-fab-button color="success" (click)="coupon()" *ngIf="userinfo && userinfo.grade>0"><p>我的<br />礼包</p></ion-fab-button>
+    <ion-fab-button color="success" (click)="presentAlertCollect('buy')" *ngIf="userinfo && userinfo.grade==0"><p>领取<br />大礼包</p></ion-fab-button>
+    <!-- <ion-fab-button color="success" *ngIf="userinfo && userinfo.grade==0"><p>即将<br />开始</p></ion-fab-button> -->
+  </ion-fab>
 
 </ion-content>

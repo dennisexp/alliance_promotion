@@ -405,14 +405,19 @@
         --color:#fff;
         p{
             font-size: 1.2rem;
-            font-weight:0;
+            font-weight:500;
         }
     }
 }
 
-.fab_right{
+.fab_right_top_margin{
+    top: 3rem;
+}
+
+.fab_left_top_margin{
     top: 8rem;
 }
+
 
 .content_intro_box {
     margin-top: 1.5rem;

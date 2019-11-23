@@ -148,7 +148,7 @@ export class SalesTablePage extends BaseUI implements OnInit {
         let message = (+status == 1) ? "已核销" : "已退回给顾客";
         super.presentToast(this.toastController, message);
       } else {
-        super.presentFailureToast(this.toastController, response['status'].message);
+        //super.presentFailureToast(this.toastController, response['status'].message);
       }
     });
   }

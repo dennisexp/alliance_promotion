@@ -17,6 +17,7 @@ export class InfoPage implements OnInit {
   public openid: any;
   public merchant: any = {};
   public userinfo: any = {};
+  public backUrl = "/home";
 
   //轮播图的属性
   public slidesOpts={
@@ -40,7 +41,8 @@ export class InfoPage implements OnInit {
   async ngOnInit() {
     this.activatedRoute.queryParams.subscribe((data: any) => {    
       this.openid = data.openid;
-      this.merchant.mid = data.mid
+      this.merchant.mid = data.mid;
+      if (data.backUrl) this.backUrl = data.backUrl;
     });
 
     let response = await this.common.ajaxGet("merchant/info?mid=" + this.merchant.mid);
@@ -63,8 +65,8 @@ export class InfoPage implements OnInit {
   }
 
 
-  goBack(){
-    this.navController.navigateBack('/home?openid='+this.openid);
+  goBack() {
+    this.navController.navigateBack(this.backUrl+'?openid='+this.openid);
   }
 
 }

@@ -210,13 +210,36 @@ module.exports = {
      * @param {*} cid 福利券id
      */
     async invalidateCoupon(openid, mid, cid) {
-        if (!openid || !mid || !cid) {
+        let ret = await this.updateCouponStatus(openid, mid, cid, 0);
+        return ret;
+    },
+
+    /**
+     * 将使用过的福利券重新激活生效
+     * @param {*} openid 用户的openid
+     * @param {*} mid 商家id
+     * @param {*} cid 福利券id
+     */
+    async validateCoupon(openid, mid, cid) {
+        let ret = await this.updateCouponStatus(openid, mid, cid, 1);
+        return ret;
+    },
+
+    /**
+     * 将使用过的福利券失效或重新生效
+     * @param {*} openid 用户的openid
+     * @param {*} mid 商家id
+     * @param {*} cid 福利券id
+     * @param {*} status 更新后的状态，1激活可用，0失效
+     */
+    async updateCouponStatus(openid, mid, cid, status) {
+        if (!openid || !mid || !cid || !(status==1 || status==0)) {
             return { "status": 0, "message": "参数错误" };
         }
         
         let condition = { "openid": openid }
 
-        let update = { $set: { "statistics.$[i].coupons.$[j].status": 0 } }
+        let update = { $set: { "statistics.$[i].coupons.$[j].status": status } }
 
         let options = {
             upsert: false,
@@ -242,6 +265,7 @@ module.exports = {
             return { "status": 1, "message": "SUCCESS", "data": ret.data };
         else
             return { "status": 0, "message": "无该用户的信息" };
+        
     }
     
 }

@@ -2,7 +2,7 @@ module.exports = {
 
     //数据库配置信息
     mongoDB: {
-        dbUrl: 'mongodb://localhost:27017/',
+        dbUrl: 'mongodb://yihe_user:5203344_zmkm@localhost:27017/',
         dbName: 'alliance_promotion',
     },
 

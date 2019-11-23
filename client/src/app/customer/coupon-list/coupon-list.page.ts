@@ -69,7 +69,8 @@ export class CouponListPage extends BaseUI implements OnInit {
     this.navController.navigateForward('/info', {
       queryParams: {
         mid: mid,
-        openid: this.userinfo ? this.userinfo.openid : ""
+        openid: this.userinfo ? this.userinfo.openid : "",
+        backUrl: "/coupon-list"
       }
     })
   }
@@ -145,7 +146,7 @@ export class CouponListPage extends BaseUI implements OnInit {
                 this.usedCouponList = response['data'].usedCouponList;
               } else {
                 super.presentFailureToast(this.toastController, response['status'].message);
-                return false;
+                //return false;
               }
             });
             
@@ -157,7 +158,13 @@ export class CouponListPage extends BaseUI implements OnInit {
     await alertCon.present();
   }
 
-
+    //锚点操作
+  scrollIntoView(id: string){
+      let element = document.getElementById(id);
+      if(element){
+      element.scrollIntoView({behavior: "auto", block: "center", inline: "nearest"});
+      }
+  }
 
   goBack(){
     this.navController.navigateBack('/home?openid='+this.openid);
