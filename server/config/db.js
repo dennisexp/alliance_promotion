@@ -60,25 +60,24 @@ class MongoDB{
                     flag ?
                         new Schema[table](obj).save(err => {
                             if (err)
-                                reject(err);
+                                reject({"status": 0, "message": err});
                             else
-                                resolve({status: 1});
+                                resolve({"status": 1, "message":"SUCCESS"});
                         }) :
                         this.findInTable(table, obj).then(res => {
-
                             if (res.length > 0) {
-                                resolve({status: 0})
+                                resolve({"status": 0, "message":"DUPLICATE"});
                             }
                             new Schema[table](obj).save(err => {
                                 if (err)
-                                    reject(err);
+                                    reject({"status": 0, "message": err});
                                 else
-                                    resolve({status: 1});
+                                    resolve({"status": 1, "message":"SUCCESS"});
                             })
                         })
                 });
             } catch (e) {
-                reject(e);
+                reject({"status": 0, "message": err});
             }
         });
     }
@@ -95,13 +94,13 @@ class MongoDB{
                 this.connect().then(() => {
                     Schema[table].insertMany(obj, (err, docs) => {
                         if (err)
-                            reject(err);
+                            reject({"status": 0, "message": err});
                         else
-                            resolve({"status":1, "docs":docs  });
+                            resolve({"status": 1, "message":"SUCCESS", "data": docs});
                     });
                 });
             } catch (e) {
-                reject(e);
+                reject({"status": 0, "message": err});
             }
         });
 
@@ -118,14 +117,14 @@ class MongoDB{
             try {
                 this.connect().then(() => {
                     Schema[table].find(obj, (err, doc) => {
-                        if (err)
-                            reject(err);
-                        else
-                            resolve({ length: doc.length, data: doc });
+                        if (err) 
+                            reject({ "status":0, "message":err });
+                        else 
+                            resolve({ "length": doc.length, "message":"SUCCESS", "data":doc });
                     });
                 });
             } catch (e) {
-                throw new Error(e);
+                reject({"status": 0, "message": err});
             }
         });
     }
@@ -141,14 +140,15 @@ class MongoDB{
             try {
                 this.connect().then(() => {
                     Schema[table].aggregate(obj, (err, doc) => {
-                        if (err)
-                            reject(err);
-                        else
-                            resolve({ length: doc.length, data: doc });
+                        if (err) 
+                            reject({ "status":0, "message":err });
+                        else 
+                            resolve({ "length": doc.length, "message":"SUCCESS", "data":doc });
+                        
                     });
                 });
             } catch (e) {
-                throw new Error(e);
+                reject({"status": 0, "message": err});
             }
         });
     }
@@ -167,13 +167,13 @@ class MongoDB{
                 this.connect().then(() => {
                     Schema[table].deleteMany(obj, err => {
                         if (err)
-                            reject(err);
+                            reject({"status": 0, "message": err});
                         else
-                            resolve({status: 1});
+                            resolve({"status": 1, "message":"SUCCESS"});
                     })
                 });
             } catch (e) {
-                throw new Error(e);
+                reject({"status": 0, "message": err});
             }
         })
     }
@@ -191,13 +191,13 @@ class MongoDB{
                 this.connect().then(() => {
                     Schema[table].updateMany(condition, {$set: newData}, err => {
                         if (err)
-                            reject(err);
+                            reject({"status": 0, "message": err});
                         else
-                            resolve({status: 1});
+                            resolve({"status": 1, "message":"SUCCESS"});
                     })
                 });
             } catch (e) {
-                throw new Error(e);
+                reject({"status": 0, "message": err});
             }
         })
     }
@@ -208,14 +208,14 @@ class MongoDB{
                 this.connect().then(() => {
                     Schema[table].findOneAndUpdate(condition, updateExp, !options?{new: true}:options, (err, doc) => {
                         if (err) {
-                            reject(err);
+                            reject({ "status":0, "message":err });
                         } else {
-                            resolve({ "status":1, "data":doc });
+                            resolve({ "status":1, "message":"SUCCESS", "data":doc });
                         }
                     })
                 });
             } catch (e) {
-                throw new Error(e);
+                reject({"status": 0, "message": err});
             }
         })
     }

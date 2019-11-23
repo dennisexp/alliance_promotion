@@ -301,8 +301,8 @@
                     </div>
                   </div>
                 </div>
-                <!-- <div class="getCoupon" *ngIf="userinfo && userinfo.grade==0" (click)="presentAlertCollect('buy')">点击<br/>领取</div> -->
-                <div class="getCoupon" *ngIf="userinfo && userinfo.grade==0">即将<br/>开始</div>
+                <div class="getCoupon" *ngIf="userinfo && userinfo.grade==0" (click)="presentAlertCollect('buy')">点击<br/>领取</div>
+                <!-- <div class="getCoupon" *ngIf="userinfo && userinfo.grade==0">即将<br/>开始</div> -->
                 <div class="getCoupon" *ngIf="userinfo && userinfo.grade>0" (click)="coupon()">马上<br/>使用</div>
               </ion-list-header>
               <!--优惠券信息-->
@@ -377,15 +377,15 @@ Your browser does not support the video tag.
 
 <ion-fab vertical="bottom" horizontal="start" slot="fixed" class="fab_button">
   <ion-fab-button size="small" (click)="withdraw()"><p>提现</p></ion-fab-button>
-  <!-- <ion-fab-button color="danger" (click)="share()"><p>分享<br />赚红包</p></ion-fab-button> -->
-  <ion-fab-button color="danger"><p>即将<br />赚红包</p></ion-fab-button>
+  <ion-fab-button color="danger" (click)="share()"><p>分享<br />赚红包</p></ion-fab-button>
+  <!-- <ion-fab-button color="danger"><p>分享<br />赚红包</p></ion-fab-button> -->
 </ion-fab>
 
 <ion-fab vertical="bottom" horizontal="end" slot="fixed" class="fab_button">
   <ion-fab-button size="small" (click)="sales()" *ngIf="userinfo && userinfo.type==2"><p>营业<br />情况</p></ion-fab-button>
   <ion-fab-button color="success" (click)="coupon()" *ngIf="userinfo && userinfo.grade>0"><p>我的<br />礼包</p></ion-fab-button>
-  <!-- <ion-fab-button color="success" (click)="presentAlertCollect('buy')" *ngIf="userinfo && userinfo.grade==0"><p>领取<br />大礼包</p></ion-fab-button> -->
-  <ion-fab-button color="success" *ngIf="userinfo && userinfo.grade==0"><p>即将<br />开始</p></ion-fab-button>
+  <ion-fab-button color="success" (click)="presentAlertCollect('buy')" *ngIf="userinfo && userinfo.grade==0"><p>领取<br />大礼包</p></ion-fab-button>
+  <!-- <ion-fab-button color="success" *ngIf="userinfo && userinfo.grade==0"><p>即将<br />开始</p></ion-fab-button> -->
 </ion-fab>
 
 </ion-content>

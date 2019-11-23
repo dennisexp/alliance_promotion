@@ -67,7 +67,7 @@ export class CommonService {
       tempStr+=tempArr[j]+json[tempArr[j]]
     }
 
-    console.log(tempStr);
+    //console.log(tempStr);
     return Md5.hashStr(tempStr);
   }
 

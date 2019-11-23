@@ -73,38 +73,38 @@ module.exports = {
     },
 
     async getInfoByInvitationCode(code) {
-        if (!code || code.trim()=="0" || code==0) {
+        if (!code || code.trim() == "0" || code == 0) {
             return { "status": 0, "message": "参数错误" };
         };
 
         let condition = [
-        {
-            $match: {
-                "invitation_code": code.trim(),
-                "status": 1
-            }
-        },
-        {
-            $lookup: {
-                from: "grades",
-                localField: "grade",
-                foreignField: "gid",
-                as: "grade"
-            }
-        },
-        {
-            $project: {
-                "_id": 0,
-                openid: 1,
-                nickname: 1,
-                grade: 1
-            }
-        },
-        { $unwind: "$grade" }, 
-        { $limit: 1 }];
+            {
+                $match: {
+                    "invitation_code": code.trim(),
+                    "status": 1
+                }
+            },
+            {
+                $lookup: {
+                    from: "grades",
+                    localField: "grade",
+                    foreignField: "gid",
+                    as: "grade"
+                }
+            },
+            {
+                $project: {
+                    "_id": 0,
+                    openid: 1,
+                    nickname: 1,
+                    grade: 1
+                }
+            },
+            { $unwind: "$grade" },
+            { $limit: 1 }];
         
         let res = await MongoDB.aggregate("user", condition);
-            //console.log("userinfo by code ", res);
+        //console.log("userinfo by code ", res);
         if (res.length > 0) {
             return { "status": 1, "message": "SUCCESS", "data": res.data[0] };
         } else {
@@ -139,7 +139,7 @@ module.exports = {
                     type: coupon.type,
                     status: coupon.status
                 }
-                if (coupon.status==1) {
+                if (coupon.status == 1) {
                     availableListTemp.push(c);
                 }
             });
@@ -149,7 +149,7 @@ module.exports = {
             // console.log("usedTemp");
             //   console.log(usedTemp);
             
-            if (availableListTemp.length>0) {
+            if (availableListTemp.length > 0) {
                 let temp = info;
                 temp.coupons = availableListTemp;
                 availableCouponList.push(temp);//未使用的券
@@ -179,9 +179,9 @@ module.exports = {
                     type: coupon.type,
                     status: coupon.status
                 }
-                if (coupon.status==0) {
+                if (coupon.status == 0) {
                     usedTemp.push(c);
-                } 
+                }
             });
 
             //   console.log("availableListTemp");
@@ -189,7 +189,7 @@ module.exports = {
             // console.log("usedTemp");
             //   console.log(usedTemp);
             
-            if (usedTemp.length>0) {
+            if (usedTemp.length > 0) {
                 let temp = info;
                 temp.coupons = usedTemp;
                 usedCouponList.push(temp);//已经使用的券
@@ -201,9 +201,47 @@ module.exports = {
             usedCouponList: usedCouponList
         }
         return ret;
+    },
+
+    /**
+     * 将使用过的福利券失效
+     * @param {*} openid 用户的openid
+     * @param {*} mid 商家id
+     * @param {*} cid 福利券id
+     */
+    async invalidateCoupon(openid, mid, cid) {
+        if (!openid || !mid || !cid) {
+            return { "status": 0, "message": "参数错误" };
+        }
+        
+        let condition = { "openid": openid }
+
+        let update = { $set: { "statistics.$[i].coupons.$[j].status": 0 } }
+
+        let options = {
+            upsert: false,
+            new: true,
+            arrayFilters: [
+                {
+                    "i": { $type: "object" },
+                    "i.mid": +mid,
+                    "i.coupons": { $type: "object" }
+                },
+                {
+                    "j": { $type: "object" },
+                    "j.type": 1,
+                    "j.cid": +cid
+                }
+            ]
+        }
+        
+        let ret = await MongoDB.findOneAndModify("user", condition, update, options);
+        //console.log(ret.data);
+
+        if (ret.status==1) 
+            return { "status": 1, "message": "SUCCESS", "data": ret.data };
+        else
+            return { "status": 0, "message": "无该用户的信息" };
     }
-
-    
-
     
 }

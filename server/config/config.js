@@ -2,7 +2,7 @@ module.exports = {
 
     //数据库配置信息
     mongoDB: {
-        dbUrl: 'mongodb://yihe_user:5203344_zmkm@localhost:27017/',
+        dbUrl: 'mongodb://localhost:27017/',
         dbName: 'alliance_promotion',
     },
 
@@ -21,7 +21,7 @@ module.exports = {
     withdraw_threshold: 30,
 
     //大礼包的
-    price: 0.01,
+    price: 193,
 
     //生成激活码的salt
     yihe_salt: "S2O33A4@Mann1n9",
@@ -35,6 +35,8 @@ module.exports = {
     //原始海报的文件名
     source_poster: "source_poster.jpg",
 
+    //默认的邀请码
+    default_invitation_code:"B7YUGEQQ",
     
 
     //微信公众号的配置和商户配置

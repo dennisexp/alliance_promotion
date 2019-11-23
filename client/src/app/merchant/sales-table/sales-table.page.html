@@ -5,9 +5,60 @@
         <ion-icon slot="icon-only" name="arrow-back" color="dark"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title color="yihe">到店客户明细</ion-title>
+
+    <ion-segment color="yihe" [(ngModel)]="tab">
+      <ion-segment-button value="pending" checked>
+        <ion-label>待核销</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="finished">
+        <ion-label>已核销</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+
   </ion-toolbar>
 </ion-header>
-<ion-content>
+<ion-content color="light">
+  <div [ngSwitch]="tab" class="p_content" *ngIf="sales">
+    <div *ngSwitchCase="'pending'">
+      <ion-grid class="salesList" *ngIf="sales.orderPendingList && sales.orderPendingList.length>0">
+        <ion-row lines="full" *ngFor="let order of sales.orderPendingList, let i = index" [style]="(i+1)<sales.orderPendingList.length? border:''">
+          <ion-col size="2" class="userHead">
+            <img class="headImg" [src]="order.customer.headimgurl">
+          </ion-col>
+          <ion-col size="8.5" class="contextCol">
+            <ion-label>{{order.customer.nickname}}</ion-label>
+            <div><ion-row>
+              <ion-col size="6.5" class="left">{{order.use_time | date:"yyyy-MM-dd HH:mm"}}</ion-col>
+              <ion-col size="5.5" class="right"><span>付款:{{order.payment | number:'1.2-2'}}元</span></ion-col>
+            </ion-row></div>
+            <p>[{{order.coupon}}]</p>
+          </ion-col>
+          <ion-col size="1.5" class="verifyBtn">
+            <ion-button (click)="presentVerication(order.usage_id)" size="small" color="yihe" fill="outline">审<br />核</ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+
+    </div>
+    <div *ngSwitchCase="'finished'">
+      <ion-grid class="salesList" *ngIf="sales.orderFinishedList && sales.orderFinishedList.length>0">
+        <ion-row lines="full" *ngFor="let order of sales.orderFinishedList, let i = index" [style]="(i+1)<sales.orderFinishedList.length? border:''">
+          <ion-col size="2" class="userHead">
+            <img class="headImg" [src]="order.customer.headimgurl">
+          </ion-col>
+          <ion-col size="10" class="contextCol">
+            <ion-label>{{order.customer.nickname}}</ion-label>
+            <div><ion-row>
+              <ion-col size="6.5" class="left">{{order.use_time | date:"yyyy-MM-dd HH:mm"}}</ion-col>
+              <ion-col size="5.5" class="right"><span>付款:{{order.payment | number:'1.2-2'}}元</span></ion-col>
+            </ion-row></div>
+            <p>[{{order.coupon}}]</p>
+          </ion-col>
+        </ion-row>
+
+      </ion-grid>
+
+    </div>
+  </div>
 
 </ion-content>

@@ -20,7 +20,6 @@
 <ion-content color="yihe">
   <div [ngSwitch]="tab" class="p_content">
     <div *ngSwitchCase="'available'">
-      <div class="blank" *ngIf="availableCouponList.length==0">恭喜您，全都用完了。。。</div>
       <ion-list class="merchants" *ngIf="availableCouponList.length>0">
         <!--列出每个店铺-->
         <!--店铺的地址等信息-->
@@ -48,9 +47,6 @@
                 </div>
                 <p class="tip">使用规则：点击本店头像查看免单详情！</p>
               </div>
-              <div class="arrowBox" >
-                <img src="assets/img/arrowright.png" id="m_{{merchant.mid}}_down" class="arrowright">
-              </div>
               <div class="useBtn" (click)="presentUse(merchant.mid, coupon.cid, coupon.label)">
                 去使用
               </div>
@@ -58,10 +54,11 @@
           </div>
         </div>
       </ion-list>
+      <!-- <div class="blank" *ngIf="availableCouponList.length==0">恭喜您，全都用完了<br />。。。</div> -->
     </div>
 
     <div *ngSwitchCase="'used'">
-      <div class="blank" *ngIf="usedCouponList.length==0">一张都没有用过。。。</div>
+      <div class="blank" *ngIf="usedCouponList.length==0">一张都没有用过<br />。。。</div>
       <ion-list class="merchants"  *ngIf="usedCouponList.length>0">
         <!--列出每个店铺-->
         <!--店铺的地址等信息-->
@@ -80,9 +77,6 @@
                 </div>
               </div>
             </div>
-            <!-- <div class="getCoupon" *ngIf="userinfo && userinfo.grade==0" (click)="presentAlertCollect('buy')">点击<br/>领取</div> -->
-            <div class="getCoupon" *ngIf="userinfo && userinfo.grade==0">即将<br/>开始</div>
-            <div class="getCoupon" *ngIf="userinfo && userinfo.grade>0" (click)="coupon()">马上<br/>使用</div>
           </ion-list-header>
           <!--优惠券信息-->
           <div *ngFor="let coupon of merchant.coupons, let j = index">

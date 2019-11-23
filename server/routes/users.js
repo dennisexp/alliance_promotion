@@ -9,11 +9,19 @@ const merchantCtrl = require('../controller/merchant');
 router.get('/', async (ctx, next) => {
   //ctx.body = 'this a users response! ' + Util.uuid(6, 32);
 
+  return;
+  let openid = "osGnz081kpGgyULuJQicl_SwpPr4",
+    mid = 4,
+    cid = 1;
+
+  let ret = await userCtrl.invalidateCoupon(openid, mid, cid);
+
+ //console.log(ret);
+ 
+  ctx.success(ret);
 
   return;
   let codes = ["AJLXKD72", "E7U16DFD", "8T3VXTSJ", "DD79ES5J", "96315GQR", "QC3VB7HT", "CHHUESWY", "A35637G5", "EFM32B55", "FDCFUC22", "1KDJ9LM9", "39KXYHNL", "GLLWX59U", "7HQX7BUE", "SHMMY76J", "93NENCBT", "3XW1R8SV", "PX48NHJV", "M5ARA9M7", "NJU6SEKW", "V8VN71M1", "3MRQVXPQ", "PCVMTXFA", "M54WBM4P", "PHHW2VXY", "PUSV6W57", "84AQRXMD", "26QC6QLK", "MGS7GL4A", "AFWVP8XY", "EMVN3GDX", "JVRVLYF6", "WUEQ1RCB", "S84Y4H1F", "LXA31C69", "W9TYTR33", "5D7TTAKC", "JXR5XGVP", "FQAJYY5F"];
-
-
   //return;
   //生成海报（带二维码的）
   let invitation_code = "AJLXKD72"; 
@@ -381,7 +389,7 @@ router.get('/coupons', async (ctx, next) => {
     //将优惠券分为已经使用的，和未使用的，查出来
     let couponList = verification.data.statistics;
     let ret = userCtrl.sepatateCoupons(couponList);
-    ret.openid = openid;
+    //ret.openid = openid;
 
     ctx.success(ret);
   } else {
@@ -417,15 +425,9 @@ router.post('/usage', async (ctx, next) => {
 
   //  签名正确，插入usage表，已经将改福利券改为已经使用：0
   if (verification.status == 1) {
-
-
-    //签名验证通过，操作提现: user表和coupon_usage表
-    //let result = await MongoDB.findOneAndModify("user", { "openid": openid, "statistics.mid": mid, "statistics.coupons.cid": coupon_id, "statistics.coupons.type":1 }, { "statistics.coupons.status": 0 });
-
-    //user表操作成功，接着将提交申请插入
-    //if (result.status == 1) {
+    //签名验证通过，操作提现: user表和coupon_usage表,然后查询出新的福利券数据
+    //1、将提交申请插入coupon_usage
       let uid = await Util.getNextSequenceValue("coupon_usage");
-
       let coupon_usage = {
         usage_id: uid,
         openid: openid,
@@ -434,34 +436,24 @@ router.post('/usage', async (ctx, next) => {
         coupon: coupon_label,
         payment: amount,
         status: 0,
+        use_time: new Date()
       }
+///////////////////
+    let insertRet = await MongoDB.insert("coupon_usage", coupon_usage);
+    if (insertRet.status == 0) {
+      ctx.error("福利券使用失败，请返回重试或联系客服");
+      return;
+    }
 
-      await MongoDB.insert("coupon_usage", coupon_usage).then(res => {
-        if (res.status == 1) {
-
-          //将优惠券分为已经使用的，和未使用的，查出来
-          let couponList=[];
-          // if (result.data) {
-          //   couponList = result.data.statistics;
-          // } else {
-            couponList = verification.data.statistics;
-          //}
-          
-          let ret = userCtrl.sepatateCoupons(couponList);
-          ret.openid = openid;
-
-          ctx.success(ret);
-          
-        } else {
-          ctx.error("福利券使用失败，请返回重试或联系客服");
-        }
-      });
-      
-    // } else {
-    //   ctx.error("提现操作失败，请返回重试或联系客服");
-    // }
-
-    //1、将该福利券插入coupon_usage
+    //2、将该福利券失效（如果不是一次性券的话）
+    let ret = await userCtrl.invalidateCoupon(openid, mid, coupon_id);
+    if (ret.status==0) {
+      ctx.error("福利券状态更新失败，请返回重试或联系客服");
+    } else {
+      //将优惠券分为已经使用的，和未使用的，查出来
+      let couponList = ret.data.statistics;
+      ctx.success(userCtrl.sepatateCoupons(couponList));
+    }
   } else {
     
     ctx.error(verification.message);

@@ -74,7 +74,7 @@ router.get('/info', async (ctx, next) => {
 });
 
 /**
- * 获取指定管理员名下商户的销售
+ * 获取指定管理员名下商户的销售记录
  */
 router.get('/sales', async (ctx, next) => {
   let openid = ctx.request.query.openid;
@@ -100,41 +100,58 @@ router.get('/sales', async (ctx, next) => {
     return;
   }
 
-  userinfo = {mid:10};
-
   let sales = await merchantCtrl.getSales(userinfo.mid);
 
-  //分成两个序列，已经成交，未成交的
-  let orderFinishedList = [];
-  let orderPendingList = [];
+  sales.status == 1 ? ctx.success(sales.data) : ctx.error(sales.message);
 
-  if (sales.status==0) {
-    ctx.error(sales.message);
+  // if (sales.status==0) {
+  //   ctx.error(sales.message);
+  // } else {
+  //   ctx.success(sales.data);
+  // }
+
+});
+
+/**
+ * 更新销售指定的记录：核销、退回
+ */
+router.post('/sales', async (ctx, next) => {
+  let usage_id = ctx.request.body.usage_id;
+  let status = ctx.request.body.status;//修改的值
+  let openid = ctx.request.body.openid;
+  let sign = ctx.request.body.sign;
+
+  if (!openid || !sign ||!usage_id ||!status) {
+    ctx.error("参数错误");
     return;
   }
 
-  sales.data.forEach(order => {
-    order.status == 0 ? orderPendingList.push(order) : orderFinishedList.push(order);
-  });
-  console.log("orderPendingList");
-  console.log(orderPendingList);
-  console.log("orderFinishedList");
-  console.log(orderFinishedList);
-
-  let ret = {
-    orderPendingList: orderPendingList,
-    orderFinishedList: orderFinishedList
+  let params = {
+    openid: openid,
+    usage_id: usage_id,
+    status: status
   }
 
-  ctx.success(ret);
+  let verification = await userCtrl.verify(openid, params, sign);
+
+  if (verification.status == 0) {
+    ctx.error(verification.message);
+    return;
+  }
+
+  //验签正确后，更新
+  let ret = await merchantCtrl.updateSales(usage_id, { status: status });
+  if (ret.status==0) {
+    ctx.error(ret.message);
+    return;
+  }
+
+  //获取操作后的销售记录
+  let sales = await merchantCtrl.getSales(verification.data.mid);
+
+  sales.status == 1 ? ctx.success(sales.data) : ctx.error(sales.message);
+
 });
 
 
-
 module.exports=router.routes();
-
-
-
-
-
-

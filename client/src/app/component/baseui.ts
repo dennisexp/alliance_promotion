@@ -30,8 +30,8 @@ export abstract class BaseUI {
     protected async presentToast(toastCtrl: ToastController, message: string) {
         const toast = await toastCtrl.create({
             message: message,
-            duration: 3000,  // 默认展示的时长
-            position: 'bottom',
+            duration: 2000,  // 默认展示的时长
+            position: 'middle',
             cssClass: 'ion-toast-yihe',/*cssClass必须写在全局*/
         });
         await toast.present();

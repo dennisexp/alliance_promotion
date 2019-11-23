@@ -169,7 +169,7 @@ module.exports = {
     addWaterMark(source, watermark, output) {
         //判断参数
         if (!source || source.trim() == "" || !watermark || watermark.trim() == "") {
-            return { "status": { "code": 0, "message": "参数错误" } };
+            return { "status": 0, "message": "参数错误" };
         }
 
         return new Promise((resolve, reject) => {
@@ -188,9 +188,9 @@ module.exports = {
                     .write(output, (err) => {
                         if (err) {
                             console.log(err);
-                            reject({ "status": { "code": 0, "message": err } });
+                            reject({ "status": 0, "message": err  });
                         } else {
-                            resolve({ "status": { "code": 1, "message": "SUCCESS" }, "data": output});
+                            resolve({ "status": 1, "message": "SUCCESS", "data": output});
                         }
                     });
 
@@ -206,7 +206,7 @@ module.exports = {
                 
             } catch (e) {
                 console.log("error", e);
-                reject({ "status": { "code": 0, "message": e } });
+                reject({ "status": 0, "message": e });
             }
         });
     

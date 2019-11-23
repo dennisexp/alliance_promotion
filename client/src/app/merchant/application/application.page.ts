@@ -81,16 +81,16 @@ export class ApplicationPage extends BaseUI implements OnInit {
       });
     });
 
-    buttons.push({
-      text: '取消',
-      role: 'cancel',
-      handler: () => {
-        //console.log('Cancel clicked');
-      }
-    });
+    // buttons.push({
+    //   text: '取消',
+    //   role: 'cancel',
+    //   handler: () => {
+    //     //console.log('Cancel clicked');
+    //   }
+    // });
 
     const actionSheet = await this.actionSheetController.create({
-      backdropDismiss: false,
+      //backdropDismiss: false,
       //header: '请选择行业类别',
       buttons: buttons
     });

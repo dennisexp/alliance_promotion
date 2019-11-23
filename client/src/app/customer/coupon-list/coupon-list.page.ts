@@ -57,8 +57,8 @@ export class CouponListPage extends BaseUI implements OnInit {
       super.presentFailureToast(this.toastController, result.message);
     }
 
-    console.log("availableCouponList", this.availableCouponList);
-    console.log("usedCouponList",this.usedCouponList);
+    // console.log("availableCouponList", this.availableCouponList);
+    // console.log("usedCouponList",this.usedCouponList);
   }
 
     /**
@@ -81,7 +81,7 @@ export class CouponListPage extends BaseUI implements OnInit {
    * @param coupon_label
    */
   async presentUse(mid, coupon_id, coupon_label) {
-    console.log("goto use", mid, coupon_id, coupon_label)
+    //console.log("goto use", mid, coupon_id, coupon_label)
     let salt = this.userinfo.salt;
     if (!this.userinfo.openid || this.userinfo.openid.trim() == "" || !salt || salt.trim() == "") {
       super.presentFailureToast(this.toastController, "账号未经授权，请刷新页面后重试");
@@ -107,7 +107,7 @@ export class CouponListPage extends BaseUI implements OnInit {
           }
         }, {
           text: '确定',
-          handler: async (data) => {
+          handler: (data) => {
             let amount = data.amount;
             if(amount=="" || amount<0){
               super.presentFailureToast(this.toastController, "请输入实际买单金额，如免单，则输入0");
@@ -136,17 +136,19 @@ export class CouponListPage extends BaseUI implements OnInit {
 
             let api = "user/usage";
 
-            let response = await this.common.ajaxPost(api, post);
-            //console.log("response: ", response);
-            if (response && response['status'].code == 1) {
-              //console.log("userinfo", response['data']);
-              super.presentToast(this.toastController, "福利券已经发送给商家");
-              this.availableCouponList = response['data'].availableCouponList;
-              this.usedCouponList = response['data'].usedCouponList;
-            } else {
-              super.presentFailureToast(this.toastController, response['status'].message);
-              return false;
-            }
+            this.common.ajaxPost(api, post).then(async (response: any) => {
+              //console.log("response: ", response);
+              if (response && response['status'].code == 1) {
+                //console.log("userinfo", response['data']);
+                super.presentToast(this.toastController, "福利券已经发送给商家");
+                this.availableCouponList = response['data'].availableCouponList;
+                this.usedCouponList = response['data'].usedCouponList;
+              } else {
+                super.presentFailureToast(this.toastController, response['status'].message);
+                return false;
+              }
+            });
+            
           }
         }
       ]

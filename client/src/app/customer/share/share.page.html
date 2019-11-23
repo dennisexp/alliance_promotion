@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar>
-    <ion-buttons slot="start">
+    <ion-buttons slot="start" *ngIf="openid && openid.trim()!='undefined'">
       <ion-button (click)="goBack()">
         <ion-icon slot="icon-only" name="arrow-back" color="dark"></ion-icon>
       </ion-button>
@@ -10,7 +10,7 @@
 </ion-header>
 
 <ion-content>
-<div *ngIf="openid">点击右上角，<br />分享给微信好友，<br />或分享到朋友圈，<br />每一名好友购买，<br />您就能赚取30元或70元的红包，<br />提现后，24小时内到账。</div>
-<div *ngIf="!openid">长按识别二维码，马上参加免单狂欢节</div>
-<div><img src="assets/img/contact.jpg"></div>
+<div *ngIf="openid && openid.trim()!='undefined'">点击右上角，<br />分享给微信好友，或分享到朋友圈，<br />每一名好友购买，<br />您就能赚取30元或70元的红包，<br />提现后，24小时内到账。</div>
+<div *ngIf="!openid || openid.trim()=='undefined'">长按识别二维码，马上参加免单狂欢节</div>
+<div><img [src]="common.config.server_domain + common.config.poster_path + invitation_code +'.jpg'"></div>
 </ion-content>
